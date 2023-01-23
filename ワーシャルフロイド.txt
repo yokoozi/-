@@ -1,0 +1,89 @@
+#include <bits/stdc++.h>
+typedef long long ll;
+typedef long double ld;
+const int INF=1e9,MOD=1e9+7,ohara=1e6+10;
+const ll LINF=1e18;
+using namespace std;
+    
+#define rep(i,n) for(ll (i)=0;(i)<(int)(n);(i)++)
+#define rrep(i,a,b) for(ll i=(a);i<(b);i++)
+#define rrrep(i,a,b) for(ll i=(a);i>=(b);i--)
+#define all(v) (v).begin(), (v).end()
+#define Size(n) (n).size()
+#define Cout(x) cout<<(x)<<endl
+#define doublecout(a) cout<<fixed<<setprecision(15)<<a<<endl;
+#define Cerr(x) cerr<<(x)<<endl
+#define fi first
+#define se second
+#define P pair<ll,ll> 
+#define m_p make_pair
+#define V vector<ll> 
+#define U_MAP unordered_map<ll,ll>
+#define pq priority_queue<ll>
+#define rpq priority_queue<ll,vector<ll>,greater<ll>>
+#define p_b push_back
+    
+ll n,cnt,ans,a[ohara],b[ohara],c[ohara],d,tmp,tmpp,m,h,w,x,y,sum,pos,k,q,l;
+ld doua;
+int dy[]={1,0,-1,0};
+int dx[]={0,1,0,-1};
+//int dy[]={-1,0,1,-1,1,-1,0,1};
+//int dx[]={-1,-1,-1,0,0,1,1,1};
+string alph("abcdefghijklmnopqrstuvwxyz"),s;
+bool fl;
+struct edge{int to,cost;};
+ll flo1[3000][3000];
+ll flo2[3000][3000];
+    
+//------ Believe yourself as a genius!!!!!! ------
+    
+int main(void){
+    cin.tie(0);
+    cout.tie(0);
+    ios::sync_with_stdio(false);
+    
+    cin>>n>>m>>l;
+    rep(i,n){
+        rep(j,n){
+            if(i==j)flo1[i][j]=0;
+            else flo1[i][j]=LINF;
+        }
+    }
+    rep(i,m){
+        cin>>a[i]>>b[i]>>c[i];
+        a[i]--;b[i]--;
+        flo1[a[i]][b[i]]=c[i];
+        flo1[b[i]][a[i]]=c[i];
+    }
+    rep(i,n){
+        rep(j,n){
+            rep(k,n){
+                flo1[j][k]=min(flo1[j][i]+flo1[i][k],flo1[j][k]);
+            }
+        }
+    }
+    //‚±‚±‚Ü‚Å‚ªW-F--------------------------------
+
+    rep(i,n){
+        rep(j,n){
+            if(flo1[i][j]<=l)flo2[i][j]=1,flo2[j][i]=1;
+            else flo2[i][j]=LINF,flo2[j][i]=LINF;
+        }
+    }
+
+    rep(i,n){
+        rep(j,n){
+            rep(k,n){
+                flo2[j][k]=min(flo2[j][i]+flo2[i][k],flo2[j][k]);
+            }
+        }
+    }
+    cin>>q;
+    rep(i,q){
+        cin>>tmp>>tmpp;
+        tmp--;tmpp--;
+        if(flo2[tmp][tmpp]==LINF)Cout(-1);
+        else Cout(flo2[tmp][tmpp]-1);
+    }
+    return 0;
+}

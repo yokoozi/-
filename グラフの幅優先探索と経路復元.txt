@@ -1,0 +1,122 @@
+#pragma GCC target("avx")
+#pragma GCC optimize("O3")
+#pragma GCC optimize("unroll-loops")
+#include <bits/stdc++.h>
+
+using namespace std;
+
+typedef long long ll;
+typedef long double ld;
+typedef pair<ll, ll> P;
+typedef vector<ll> V;
+typedef unordered_map<ll, ll> U_MAP;
+typedef priority_queue<ll> pq;
+typedef priority_queue<ll, vector<ll>, greater<ll>> rpq;
+constexpr ll INF = 1e9, MOD = 1e9 + 7, ohara = 1e6 + 10;
+constexpr ll LINF = 1e18;
+
+#define rep(i, n) for (ll i = 0LL; (i) < (ll)(n); (i)++)
+#define rrep(i, a, b) for (ll i = (ll)(a); i < (ll)(b); i++)
+#define rrrep(i, a, b) for (ll i = (ll)(a); i >= (ll)(b); i--)
+#define all(v) (v).begin(), (v).end()
+#define Size(n) (n).size()
+#define Cout(x) cout << (x) << endl
+#define doublecout(a) cout << fixed << setprecision(15) << a << endl;
+#define fi first
+#define se second
+#define m_p make_pair
+#define p_b push_back
+
+//------ Believe yourself as a genius!!!!!! ------
+
+int dy[] = {1, 0, -1, 0};
+int dx[] = {0, 1, 0, -1};
+// int dy[]={-1,0,1,-1,1,-1,0,1};int dx[]={-1,-1,-1,0,0,1,1,1};
+string alph("abcdefghijklmnopqrstuvwxyz"), s;
+ll n, cnt, ans, a[ohara], b[ohara], c, dis[ohara], tmp, m, h, w, x, y, sum, k,
+    q;
+struct edge {
+  ll to, cost;
+};
+V g[ohara], gya[ohara];
+ll ok[500][500];
+
+vector<ll> get_path(ll t) {
+  vector<ll> path;
+  queue<ll> que;
+  que.push(t);
+  bool vi[n + 10] = {};
+  while (!que.empty()) {
+    ll moto = que.front();
+    bool ok = false;
+    que.pop();
+    if (vi[moto]) continue;
+    vi[moto] = true;
+    path.p_b(moto);
+    rep(i, Size(gya[moto])) {
+      if (ok) break;
+      ll to = gya[moto][i];
+      if (vi[to] == false) {
+        if (dis[moto] - dis[to] == 1) {
+          que.push(to);
+          ok = true;
+        }
+      }
+    }
+  }
+  reverse(all(path));
+  return path;
+}
+
+ll s_p(ll f, ll t) {
+  queue<ll> que;
+  que.push(0);
+  rep(i, n + 5) dis[i] = LINF;
+  dis[0] = 0;
+  bool vi[n + 10] = {};
+  while (!que.empty()) {
+    ll moto = que.front();
+    que.pop();
+    if (vi[moto]) continue;
+    vi[moto] = true;
+    rep(i, Size(g[moto])) {
+      ll to = g[moto][i];
+      if (moto == f && to == t) continue;
+      if (vi[to] == false) {
+        que.push(to);
+        dis[to] = min(dis[to], dis[moto] + 1);
+      }
+    }
+  }
+  return dis[n - 1];
+}
+
+int main(void) {
+  cin.tie(0);
+  cout.tie(0);
+  ios::sync_with_stdio(false);
+
+  cin >> n >> m;
+  rep(i, m) {
+    cin >> a[i] >> b[i];
+    a[i]--, b[i]--;
+    g[a[i]].p_b(b[i]);
+    gya[b[i]].p_b(a[i]);
+  }
+  ll opp = s_p(n + 10, n + 10);
+  if (dis[n - 1] != LINF) {
+    vector<ll> path = get_path(n - 1);
+    rep(i, Size(path) - 1) {
+      ans = s_p(path[i], path[i + 1]);
+      ok[path[i]][path[i + 1]] = ans;
+    }
+  }
+  rep(i, m) {
+    ans = ok[a[i]][b[i]];
+    if (ans == 0) ans = opp;
+    if (ans == LINF) ans = -1;
+    Cout(ans);
+  }
+
+  return 0;
+}

@@ -1,0 +1,103 @@
+#pragma target("avx")
+#include <bits/stdc++.h>
+
+using namespace std;
+
+typedef long long ll;
+typedef long double ld;
+typedef pair<ll, ll> P;
+typedef vector<ll> V;
+typedef unordered_map<ll, ll> U_MAP;
+typedef priority_queue<ll> pq;
+typedef priority_queue<ll, vector<ll>, greater<ll>> rpq;
+const int INF = 1e9, MOD = 1e9 + 7, ohara = 1e6 + 10;
+const ll LINF = 1e18;
+
+#define rep(i, n) for (ll(i) = 0; (i) < (int)(n); (i)++)
+#define rrep(i, a, b) for (ll i = (a); i < (b); i++)
+#define rrrep(i, a, b) for (ll i = (a); i >= (b); i--)
+#define all(v) (v).begin(), (v).end()
+#define Size(n) (n).size()
+#define Cout(x) cout << (x) << endl
+#define doublecout(a) cout << fixed << setprecision(15) << a << endl;
+#define fi first
+#define se second
+#define m_p make_pair
+#define p_b push_back
+
+//------ Believe yourself as a genius!!!!!! ------
+
+int dy[] = {1, 0, -1, 0};
+int dx[] = {0, 1, 0, -1};
+// int dy[]={-1,0,1,-1,1,-1,0,1};int dx[]={-1,-1,-1,0,0,1,1,1};
+string alph("abcdefghijklmnopqrstuvwxyz"), s;
+ll n, cnt, ans, a[ohara], b, c, d, tmp, m, h, w, x, y, sum, k, q;
+ll rui[ohara], tatek[100], tatea[100], dp[100][5];
+
+int main(void) {
+  cin.tie(0);
+  cout.tie(0);
+  ios::sync_with_stdio(false);
+
+  cnt = 2;
+  rui[0] = 1;
+  rrep(i, 1, 46) {
+    rui[i] = cnt;
+    cnt *= 2;
+  }
+
+  cin >> n >> k;
+  ll st = 0;
+  rep(i, n) {
+    cin >> a[i];
+    tmp = a[i];
+    while (1) {
+      rrrep(i, 45, 0) {
+        if (rui[i] <= tmp) {
+          tmp -= rui[i];
+          tatea[i + 1]++;
+          st = max(st, i + 1);
+        }
+      }
+      if (tmp == 0) break;
+    }
+  }
+  tmp = k;
+  while (1) {
+    rrrep(i, 45, 0) {
+      if (rui[i] <= tmp) {
+        tmp -= rui[i];
+        tatek[i + 1]++;
+        st = max(st, i + 1);
+      }
+    }
+    if (tmp == 0) break;
+  }
+
+  rep(i, 80) rep(j, 4) dp[i][j] = -1;
+  dp[0][0] = 1;
+  //dp[i][j] := ã‚©‚çiŒ…–Ú‚Ü‚ÅAj=0‚È‚ç‚¸‚Á‚ÆˆêB
+  //j=1‚È‚çk‚æ‚è¬‚³‚¢‚±‚Æ‚ªŠm’è
+  //ÅãˆÊbit‚ª‰½‚©‚Íst‚ÅŠÇ—‚µ‚Ä‚¢‚é
+  //http://drken1215.hatenablog.com/entry/2019/02/04/013700‚ðŒ©‚é
+
+  rrep(i, 0, 46) {
+    if (st - i <= 0) break;
+    if (tatek[st - i] == 1) {
+      dp[i][1] = tatea[st - i] * rui[st - i - 1];
+      if (i >= 1) dp[i][1] += dp[i - 1][0];
+    }
+    if (dp[i - 1][1] != -1 && i >= 1) {
+      ll cost = max(tatea[st - i], n - tatea[st - i]) * rui[st - i - 1];
+      if (i >= 1) cost += dp[i - 1][1];
+      dp[i][1] = max(cost, dp[i][1]);
+    }
+    dp[i][0] = dp[i - 1][0] +
+               (tatek[st - i] == 1 ? (n - tatea[st - i]) : tatea[st - i]) *
+                   rui[st - i - 1];
+    ans = max(dp[i][0], dp[i][1]);
+    //cout << dp[i][0] << " " << dp[i][1] << " " << i << "\n";
+  }
+  Cout(ans);
+  return 0;
+}

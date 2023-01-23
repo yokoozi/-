@@ -1,0 +1,11 @@
+long long gcd(long long aaa,long long bbb){
+    if(bbb==0){
+        return aaa;
+    }
+    return gcd(bbb,aaa%bbb);
+}
+ 
+ll lcm(ll aaa,ll bbb){
+    ll g = __gcd(aaa,bbb);
+    return aaa/g * bbb;
+}

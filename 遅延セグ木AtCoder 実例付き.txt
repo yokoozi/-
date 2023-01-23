@@ -1,0 +1,335 @@
+#pragma target("avx")
+#include <bits/stdc++.h>
+
+using namespace std;
+
+typedef long long ll;
+typedef long double ld;
+typedef pair<ll, ll> P;
+typedef vector<ll> V;
+typedef unordered_map<ll, ll> U_MAP;
+typedef priority_queue<ll> pq;
+typedef priority_queue<ll, vector<ll>, greater<ll>> rpq;
+constexpr ll INF = 1e9, MOD = 998244353, ohara = 1e6 + 10;
+constexpr ll LINF = 1e18;
+
+#define rep(i, n) for (ll(i) = 0; (i) < (int)(n); (i)++)
+#define rrep(i, a, b) for (ll i = (a); i < (b); i++)
+#define rrrep(i, a, b) for (ll i = (a); i >= (b); i--)
+#define all(v) (v).begin(), (v).end()
+#define Size(n) (n).size()
+#define Cout(x) cout << (x) << endl
+#define doublecout(a) cout << fixed << setprecision(15) << a << endl;
+#define fi first
+#define se second
+#define m_p make_pair
+#define p_b push_back
+string to_string(string s) { return '"' + s + '"'; }
+string to_string(const char* s) { return to_string((string)s); }
+string to_string(bool b) { return (b ? "true" : "false"); }
+template <typename A, typename B>
+string to_string(pair<A, B> p) {
+  return "(" + to_string(p.first) + ", " + to_string(p.second) + ")";
+}
+template <typename A>
+string to_string(A v) {
+  bool first = true;
+  string res = "{";
+  for (const auto& x : v) {
+    if (!first) {
+      res += ", ";
+    }
+    first = false;
+    res += to_string(x);
+  }
+  res += "}";
+  return res;
+}
+void debug_out() { cerr << endl; }
+template <typename Head, typename... Tail>
+void debug_out(Head H, Tail... T) {
+  cerr << " " << to_string(H);
+  debug_out(T...);
+}
+#define debug(...) cerr << "[" << #__VA_ARGS__ << "]:", debug_out(__VA_ARGS__)
+
+//------ Believe yourself as a genius!!!!!! ------
+
+namespace internal {
+
+// @param n `0 <= n`
+// @return minimum non-negative `x` s.t. `n <= 2**x`
+ll ceil_pow2(ll n) {
+  ll x = 0;
+  while ((1U << x) < (unsigned int)(n)) x++;
+  return x;
+}
+
+// @param n `1 <= n`
+// @return minimum non-negative `x` s.t. `(n & (1 << x)) != 0`
+ll bsf(unsigned int n) {
+#ifdef _MSC_VER
+  unsigned long index;
+  _BitScanForward(&index, n);
+  return index;
+#else
+  return __builtin_ctz(n);
+#endif
+}
+
+}  // namespace internal
+
+template <class S, S (*op)(S, S), S (*e)(), class F, S (*mapping)(F, S),
+          F (*composition)(F, F), F (*id)()>
+struct lazy_segtree {
+ public:
+  lazy_segtree() : lazy_segtree(0) {}
+  lazy_segtree(ll n) : lazy_segtree(std::vector<S>(n, e())) {}
+  lazy_segtree(const std::vector<S>& v) : _n(ll(v.size())) {
+    log = internal::ceil_pow2(_n);
+    size = 1 << log;
+    d = std::vector<S>(2 * size, e());
+    lz = std::vector<F>(size, id());
+    for (ll i = 0; i < _n; i++) d[size + i] = v[i];
+    for (ll i = size - 1; i >= 1; i--) {
+      update(i);
+    }
+  }
+
+  void set(ll p, S x) {
+    assert(0 <= p && p < _n);
+    p += size;
+    for (ll i = log; i >= 1; i--) push(p >> i);
+    d[p] = x;
+    for (ll i = 1; i <= log; i++) update(p >> i);
+  }
+
+  S get(ll p) {
+    assert(0 <= p && p < _n);
+    p += size;
+    for (ll i = log; i >= 1; i--) push(p >> i);
+    return d[p];
+  }
+
+  S prod(ll l, ll r) {
+    assert(0 <= l && l <= r && r <= _n);
+    if (l == r) return e();
+
+    l += size;
+    r += size;
+
+    for (ll i = log; i >= 1; i--) {
+      if (((l >> i) << i) != l) push(l >> i);
+      if (((r >> i) << i) != r) push(r >> i);
+    }
+
+    S sml = e(), smr = e();
+    while (l < r) {
+      if (l & 1) sml = op(sml, d[l++]);
+      if (r & 1) smr = op(d[--r], smr);
+      l >>= 1;
+      r >>= 1;
+    }
+
+    return op(sml, smr);
+  }
+
+  S all_prod() { return d[1]; }
+
+  void apply(ll p, F f) {
+    assert(0 <= p && p < _n);
+    p += size;
+    for (ll i = log; i >= 1; i--) push(p >> i);
+    d[p] = mapping(f, d[p]);
+    for (ll i = 1; i <= log; i++) update(p >> i);
+  }
+  void apply(ll l, ll r, F f) {
+    assert(0 <= l && l <= r && r <= _n);
+    if (l == r) return;
+
+    l += size;
+    r += size;
+
+    for (ll i = log; i >= 1; i--) {
+      if (((l >> i) << i) != l) push(l >> i);
+      if (((r >> i) << i) != r) push((r - 1) >> i);
+    }
+
+    {
+      ll l2 = l, r2 = r;
+      while (l < r) {
+        if (l & 1) all_apply(l++, f);
+        if (r & 1) all_apply(--r, f);
+        l >>= 1;
+        r >>= 1;
+      }
+      l = l2;
+      r = r2;
+    }
+
+    for (ll i = 1; i <= log; i++) {
+      if (((l >> i) << i) != l) update(l >> i);
+      if (((r >> i) << i) != r) update((r - 1) >> i);
+    }
+  }
+
+  template <bool (*g)(S)>
+  ll max_right(ll l) {
+    return max_right(l, [](S x) { return g(x); });
+  }
+  template <class G>
+  ll max_right(ll l, G g) {
+    assert(0 <= l && l <= _n);
+    assert(g(e()));
+    if (l == _n) return _n;
+    l += size;
+    for (ll i = log; i >= 1; i--) push(l >> i);
+    S sm = e();
+    do {
+      while (l % 2 == 0) l >>= 1;
+      if (!g(op(sm, d[l]))) {
+        while (l < size) {
+          push(l);
+          l = (2 * l);
+          if (g(op(sm, d[l]))) {
+            sm = op(sm, d[l]);
+            l++;
+          }
+        }
+        return l - size;
+      }
+      sm = op(sm, d[l]);
+      l++;
+    } while ((l & -l) != l);
+    return _n;
+  }
+
+  template <bool (*g)(S)>
+  ll min_left(ll r) {
+    return min_left(r, [](S x) { return g(x); });
+  }
+  template <class G>
+  ll min_left(ll r, G g) {
+    assert(0 <= r && r <= _n);
+    assert(g(e()));
+    if (r == 0) return 0;
+    r += size;
+    for (ll i = log; i >= 1; i--) push((r - 1) >> i);
+    S sm = e();
+    do {
+      r--;
+      while (r > 1 && (r % 2)) r >>= 1;
+      if (!g(op(d[r], sm))) {
+        while (r < size) {
+          push(r);
+          r = (2 * r + 1);
+          if (g(op(d[r], sm))) {
+            sm = op(d[r], sm);
+            r--;
+          }
+        }
+        return r + 1 - size;
+      }
+      sm = op(d[r], sm);
+    } while ((r & -r) != r);
+    return 0;
+  }
+
+ private:
+  ll _n, size, log;
+  std::vector<S> d;
+  std::vector<F> lz;
+
+  void update(ll k) { d[k] = op(d[2 * k], d[2 * k + 1]); }
+  void all_apply(ll k, F f) {
+    d[k] = mapping(f, d[k]);
+    if (k < size) lz[k] = composition(f, lz[k]);
+  }
+  void push(ll k) {
+    all_apply(2 * k, lz[k]);
+    all_apply(2 * k + 1, lz[k]);
+    lz[k] = id();
+  }
+};
+
+int dy[] = {1, 0, -1, 0};
+int dx[] = {0, 1, 0, -1};
+// int dy[]={-1,0,1,-1,1,-1,0,1};int dx[]={-1,-1,-1,0,0,1,1,1};
+string alph("abcdefghijklmnopqrstuvwxyz"), s;
+ll n, cnt, ans, a, b, c, d, tmp, m, h, w, x, y, sum, k, q;
+ll ten[ohara], one[ohara];
+
+//各要素および区間取得結果の型。整数の数列ならll
+struct S {
+  ll val;
+  ll len;
+};
+// not-struct ver
+// using S = int;
+
+//操作を表す値の型。整数を加算するならll
+/*
+struct F {
+};
+*/
+using F = int;
+
+//左の区間と右の区間があって、どういうふうに答えを求めるか的な
+//左右の区間の情報があって、それらを合わせた区間のS、つまりdataを求めるイメージ
+S op(S l, S r) { return S{(l.val * ten[r.len] + r.val) % MOD, l.len + r.len}; }
+
+// opの単位元
+S e() { return S{0, 0}; }
+
+//区間xがあって、それに操作fを適用させる
+//その時のS、つまりdataを求める
+//単位元の操作が来た時の場合分けに注意
+// f=0つまり単位元操作は影響を及ぼしたらダメなので（0に置き換えたらダメなので）
+// xのままでよいからreturn x
+S mapping(F f, S x) {
+  //ある整数fに置換
+  if (f == 0)
+    return x;
+  else
+    return S{(one[x.len] * f) % MOD, x.len};
+}
+
+//操作gの後に操作fを追加するとき
+//区間加算ならreturn f+g;
+//可換でない時注意
+//ある単一要素にgとfを作用させると考えると考えやすい説
+//単位元の操作が来た時の場合分けに注意
+// f=0つまり単位元操作を後にするなら前のままでよいのでg
+F composition(F f, F g) {
+  if (f == 0)
+    return g;
+  else
+    return f;
+}
+
+// mappingの単位元
+F id() { return 0; }
+
+int main(void) {
+  cin.tie(0);
+  cout.tie(0);
+  ios::sync_with_stdio(false);
+
+  cin >> n >> q;
+  ten[0] = 1;
+  rrep(i, 1, n + 10) ten[i] = ten[i - 1] * 10, ten[i] %= MOD;
+  rrep(i, 1, n + 10) one[i] = one[i - 1] * 10 + 1, one[i] %= MOD;
+  vector<S> a(n);
+  rep(i, n) a[i] = S{1, 1};
+  lazy_segtree<S, op, e, F, mapping, composition, id> seg(a);
+
+  // Cout(seg.all_prod().val);
+  while (q--) {
+    ll l, r;
+    cin >> l >> r >> d;
+    l--;
+    seg.apply(l, r, d);
+    Cout(seg.all_prod().val);
+  }
+  return 0;
+}

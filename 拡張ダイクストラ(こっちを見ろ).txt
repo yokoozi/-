@@ -1,0 +1,109 @@
+#pragma target("avx")
+#include <bits/stdc++.h>
+
+using namespace std;
+
+typedef long long ll;
+typedef long double ld;
+typedef pair<int, int> P;
+typedef vector<ll> V;
+typedef unordered_map<ll, ll> U_MAP;
+typedef priority_queue<ll> pq;
+typedef priority_queue<ll, vector<ll>, greater<ll>> rpq;
+const int INF = 1e9, MOD = 1e9 + 7, ohara = 1e6 + 10;
+const ll LINF = 1e18;
+
+#define rep(i, n) for (ll(i) = 0; (i) < (int)(n); (i)++)
+#define rrep(i, a, b) for (ll i = (a); i < (b); i++)
+#define rrrep(i, a, b) for (ll i = (a); i >= (b); i--)
+#define all(v) (v).begin(), (v).end()
+#define Size(n) (n).size()
+#define Cout(x) cout << (x) << endl
+#define doublecout(a) cout << fixed << setprecision(15) << a << endl;
+#define fi first
+#define se second
+#define m_p make_pair
+#define p_b push_back
+
+//------ Believe yourself as a genius!!!!!! ------
+
+int dy[] = {1, 0, -1, 0};
+int dx[] = {0, 1, 0, -1};
+// int dy[]={-1,0,1,-1,1,-1,0,1};int dx[]={-1,-1,-1,0,0,1,1,1};
+string alph("abcdefghijklmnopqrstuvwxyz"), s;
+int n, cnt, ans, a, b, c, d[ohara], tmp, m, h, w, x, y, k, q, t[ohara];
+struct edge {
+  int to, cost;
+};
+vector<edge> g[ohara];
+int dat[10000 + 100][5][205];
+bool vi[ohara];
+
+int main(void) {
+  cin.tie(0);
+  cout.tie(0);
+  ios::sync_with_stdio(false);
+
+  cin >> n >> m >> x;
+  rep(i, n) cin >> t[i];
+  rep(i, m) {
+    cin >> a >> b >> c;
+    a--;
+    b--;
+    g[a].p_b({b, c});
+    g[b].p_b({a, c});
+  }
+
+  //拡張ダイクストラ宣言区域
+
+  // queに(合計経路長,現在頂点,最後に行った0 or 1,0 or
+  // 1を出てからの経路長)を持たせる 持たせた状態における配列を用意
+
+  //これつまりdat(現在頂点,最後に行った0 or 1,0 or
+  // 1を出てからの経路長)=合計経路長
+  //同じ状態のdatは小さければ小さいほど良い
+  //一般にダイクストラを適用できる問題では必ずそうなっている
+  //つまりdatが小さく更新できる時のみqueにpush
+
+  //後はダイクストラ法に倣う
+  priority_queue<pair<P, P>, vector<pair<P, P>>, greater<pair<P, P>>> que;
+  que.push({{0, 0}, {0, 0}});
+  ans = INF;
+  rep(i, n + 1) rep(j, 4) rep(k, 203) dat[i][j][k] = INF;
+  dat[0][0][0] = 0;
+
+  while (1) {
+    if (que.empty()) break;
+    pair<P, P> X;
+    X = que.top();
+    que.pop();
+
+    int now = X.fi.se, fl = X.se.fi, time = X.se.se, sum = X.fi.fi;
+
+    if (dat[now][fl][time] < sum) continue;
+
+    rep(i, Size(g[now])) {
+      edge e = g[now][i];
+      int to = e.to, new_time, new_fl = fl;
+
+      if (t[to] != 1)
+        new_time = 0, new_fl = t[to];
+      else
+        new_time = time + e.cost;
+
+      new_time = min(x + 1, new_time);
+
+      if (fl != new_fl && time + e.cost < x)
+        continue;  //ここだけ通常のダイクストラ法とは異なる
+      if (dat[to][new_fl][new_time] <= sum + e.cost) continue;
+
+      que.push({{sum + e.cost, to}, {new_fl, new_time}});
+      dat[to][new_fl][new_time] = sum + e.cost;
+    }
+  }
+  rep(i, 3) {
+    rep(j, 203) { ans = min(ans, dat[n - 1][i][j]); }
+  }
+  Cout(ans);
+  return 0;
+}

@@ -1,0 +1,54 @@
+void init(int nn) {
+	for (int i=0; i<nn; i++) {
+		par[i] = i;
+		ran[i] = 0;
+	}
+}//初期化
+
+ll root(ll xx){
+    if(par[xx]==xx){
+        return xx;
+    }
+    else{
+        return par[xx]=root(par[xx]);
+    }
+}
+//木の根を求めている。
+ 
+bool same(ll xx,ll yy){
+    return root(xx)==root(yy);
+}
+//同じ集合？？
+ 
+void unite(ll xx,ll yy){
+    xx=root(xx);
+    yy=root(yy);
+    if(xx==yy)return;
+    
+    if(ran[xx]<ran[yy]){
+        par[xx]=yy;
+    }
+    else{
+        par[yy]=xx;
+        if(ran[xx]==ran[yy])ran[xx]++;
+    }
+}
+//xとyの属する集合を併合
+ 
+int main(void){
+       cin.tie(0);
+    ios::sync_with_stdio(false);
+ 
+       cin >> n >> m;
+     init(n);
+      rep(i,m){
+          cin >> a >> b;
+          unite(a,b);
+      }
+      set<int> st;
+      rrep(i,1,n+1){
+          st.insert(root(i));
+      }
+      Cout(st.size()-1);
+return 0;
+}

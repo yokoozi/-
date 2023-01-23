@@ -1,0 +1,108 @@
+#pragma GCC target("avx")
+#pragma GCC optimize("O3")
+#pragma GCC optimize("unroll-loops")
+#include <bits/stdc++.h>
+
+using namespace std;
+
+typedef long long ll;
+typedef long double ld;
+typedef pair<ll, ll> P;
+typedef vector<ll> V;
+typedef unordered_map<ll, ll> U_MAP;
+typedef priority_queue<ll> pq;
+typedef priority_queue<ll, vector<ll>, greater<ll>> rpq;
+constexpr ll INF = 1e9, MOD = 1e9 + 7, ohara = 1e6 + 10;
+constexpr ll LINF = 1e18;
+
+#define rep(i, n) for (ll i = 0LL; (i) < (ll)(n); (i)++)
+#define rrep(i, a, b) for (ll i = (ll)(a); i < (ll)(b); i++)
+#define rrrep(i, a, b) for (ll i = (ll)(a); i >= (ll)(b); i--)
+#define all(v) (v).begin(), (v).end()
+#define Size(n) (n).size()
+#define Cout(x) cout << (x) << endl
+#define doublecout(a) cout << fixed << setprecision(15) << a << endl;
+#define fi first
+#define se second
+#define m_p make_pair
+#define p_b push_back
+
+//------ Believe yourself as a genius!!!!!! ------
+
+int dy[] = {1, 0, -1, 0};
+int dx[] = {0, 1, 0, -1};
+// int dy[]={-1,0,1,-1,1,-1,0,1};int dx[]={-1,-1,-1,0,0,1,1,1};
+string alph("abcdefghijklmnopqrstuvwxyz"), s;
+ll n, cnt, a[ohara], b, c[ohara], d, tmp, m, h, w, x, y, sum, k, q;
+
+/// 行列積
+vector<V> mat_mul(vector<V> &a, vector<V> &b) {
+  vector<V> res(a.size(), V(b[0].size()));
+  for (int i = 0; i < a.size(); i++) {
+    for (int j = 0; j < b[0].size(); j++) {
+      ll mat_sum = 0;
+      for (int k = 0; k < b.size(); k++) {
+        // 半環をなす演算のみ可能（xor や and は可能）
+        // (mat_sum += a[i][k] * b[k][j]) %= MOD;
+        mat_sum ^= (a[i][k] & b[k][j]);  // 本問題はこれ
+      }
+      res[i][j] = mat_sum;
+    }
+  }
+  return res;
+}
+
+/// 行列累乗
+vector<V> mat_pow(vector<V> a, ll n) {
+  vector<V> res(a.size(), V(a.size(), 0));
+  // 単位行列で初期化
+  // for (int i = 0; i < a.size(); i++) res[i][i] = 1;
+  for (int i = 0; i < a.size(); i++)
+    res[i][i] = (1LL << 35) -
+                1;  // 本問題では and 取るから全部のビットが立ったやつで初期化
+  // 繰り返し二乗法
+  while (n > 0) {
+    if (n & 1) res = mat_mul(a, res);
+    a = mat_mul(a, a);
+    n >>= 1;
+  }
+  return res;
+}
+
+int main(void) {
+  cin.tie(0);
+  cout.tie(0);
+  ios::sync_with_stdio(false);
+
+  cin >> k >> m;
+  rep(i, k) cin >> a[i];
+  rep(i, k) cin >> c[i];
+  ll need = m - k;
+  if (need <= 0) {
+    Cout(a[m - 1]);
+    return 0;
+  }
+  reverse(a, a + k);
+
+  // n 乗する行列の 1 乗目を書く（何を n 乗するのかを書く）
+  // https://atcoder.jp/contests/abc009/tasks/abc009_4 (漸化式の立て方)
+  vector<V> m_now(k, V(k));  //問題の行列
+  rep(i, k) {
+    rep(j, k) {
+      if (i == 0)
+        m_now[i][j] = c[j];
+      else {
+        ll val = 0;
+        if (i - 1 == j) val = (1LL << 35) - 1;
+        m_now[i][j] = val;
+      }
+    }
+  }
+
+  m_now = mat_pow(m_now, need);  // m_now の need 乗は？
+  vector<V> A(k, V(1));
+  rep(i, k) A[i][0] = a[i];
+  auto ans = mat_mul(m_now, A);  // m 乗したやつと書けて初めてansが求まる
+  cout << ans[0][0] << endl;
+  return 0;
+}

@@ -1,0 +1,250 @@
+#include <bits/stdc++.h>
+typedef long long ll;
+typedef long double ld;
+const int INF=1e9,MOD=1e9+7,ohara=1e6+10;
+const ll LINF=1e18;
+using namespace std;
+
+#define rep(i,n) for(int (i)=0;(i)<(int)(n);(i)++)
+#define rrep(i,a,b) for(int i=(a);i<(b);i++)
+#define rrrep(i,a,b) for(int i=(a);i>=(b);i--)
+#define all(v) (v).begin(), (v).end()
+#define Size(n) (n).size()
+#define Cout(x) cout<<(x)<<endl
+#define doublecout(a) cout<<fixed<<setprecision(15)<<a<<endl;
+#define Cerr(x) cerr<<(x)<<endl
+#define fi first
+#define se second
+#define P pair<ll,ll> 
+#define m_p make_pair
+#define V vector<ll> 
+#define U_MAP unordered_map<ll,ll>
+
+ll n,cnt,ans,a,b,c,d[ohara],tmp,tmpp,m,h,w,x[ohara],y,sum,pos,k,q,s[ohara],t[ohara],l[ohara],r[ohara],score[ohara];
+ld doua;
+int dy[]={1,0,-1,0};
+int dx[]={0,1,0,-1};
+//int dy[]={-1,0,1,-1,1,-1,0,1};
+//int dx[]={-1,-1,-1,0,0,1,1,1};
+string alph("abcdefghijklmnopqrstuvwxyz");
+bool fl;
+struct edge{int to,cost;};
+pair<ll,pair<ll,ll>> p[ohara];
+
+//-------------------------↓↓↓↓↓↓------------------------
+
+template<class T> vector<ll> Zarts(const vector<T> & AR, ll CNT = 0) {
+    vector<ll> RES;
+    map<T, ll> MP;
+    for (auto &e : AR) MP[e] = 0;
+    for (auto &e : MP) e.se = CNT++;
+    for (auto &e : AR) RES.push_back(MP[e]);
+    return RES;
+}
+
+template<class T> class Lazy_Segment_Tree_Range_Minimum_Query {
+	size_t N, M;
+	T ini;
+	vector<T> node, lazy;
+	vector<bool> lazyflag;
+ 
+public:
+	Lazy_Segment_Tree_Range_Minimum_Query(const vector<T>& ar, const T ini) : M(ar.size()), ini(ini) {
+		for (N=1; N<M; N*=2);
+		node.resize(2*N-1);
+		lazy.resize(2*N-1,ini);
+		lazyflag.resize(2*N-1,false);
+		for (int i=0; i<M; i++) node[i+N-1]=ar[i];
+		for (int i=N-2; i>=0; i--) node[i]=min(node[i*2+1],node[i*2+2]);
+	}
+ 
+	Lazy_Segment_Tree_Range_Minimum_Query(const size_t M, const T ini) : M(M), ini(ini) {
+		for (N=1; N<M; N*=2);
+		node.resize(2*N-1,ini);
+		lazy.resize(2*N-1,ini);
+		lazyflag.resize(2*N-1,false);
+	}
+ 
+	void eval(int K, int L, int R) {
+		if (lazyflag[K]) {
+			node[K]=lazy[K];
+			if (R-L>1) {
+				lazy[K*2+1]=lazy[K];
+				lazy[K*2+2]=lazy[K];
+				lazyflag[K*2+1]=lazyflag[K*2+2]=true;
+			}
+			lazyflag[K]=false;
+		}
+	}
+ 
+	void update(int A, int B, T X, int K = 0, int L = 0, int R = -1) {
+		if (R<0) R = N;
+		eval(K,L,R);
+		if (B<=L||R<=A) return;
+		if (A<=L&&R<=B) {
+			lazy[K]=X;
+			lazyflag[K]=true;
+			eval(K,L,R);
+		}
+		else {
+			update(A,B,X,2*K+1,L,(L+R)/2);
+			update(A,B,X,2*K+2,(L+R)/2,R);
+			node[K]=min(node[2*K+1],node[2*K+2]);
+		}
+	}
+ 
+	T getvar(int A, int B, int K = 0, int L = 0, int R = -1) {
+		if (R<0) R=N;
+		eval(K,L,R);
+		if (B<=L||R<=A) return ini;
+		if (A<=L&&R<=B) return node[K];
+		T vl=getvar(A,B,2*K+1,L,(L+R)/2);
+		T vr=getvar(A,B,2*K+2,(L+R)/2,R);
+		return min(vl,vr);
+	}
+ 
+	T operator[](size_t idx) {
+		return getvar(idx,idx+1);
+	}
+ 
+	T operator[](pair<size_t, size_t> p) {
+		return getvar(p.fi,p.se);
+	}
+ 
+	void print() {
+		cout<<"{ "<<getvar(0,1);
+		for (int i=1; i<M; i++) cout<<", "<<getvar(i,i+1);
+		cout<<" }"<<endl;
+	}
+};
+ 
+template<class T> class Lazy_Segment_Tree_Range_Maximum_Query {
+	size_t N, M;
+	T ini;
+	vector<T> node, lazy;
+	vector<bool> lazyflag;
+ 
+public:
+	Lazy_Segment_Tree_Range_Maximum_Query(const vector<T>& ar, const T ini) : M(ar.size()), ini(ini) {
+		for (N=1; N<M; N*=2);
+		node.resize(2*N-1);
+		lazy.resize(2*N-1,ini);
+		lazyflag.resize(2*N-1,false);
+		for (int i=0; i<M; i++) node[i+N-1]=ar[i];
+		for (int i=N-2; i>=0; i--) node[i]=max(node[i*2+1],node[i*2+2]);
+	}
+ 
+	Lazy_Segment_Tree_Range_Maximum_Query(const size_t M, const T ini) : M(M), ini(ini) {
+		for (N=1; N<M; N*=2);
+		node.resize(2*N-1,ini);
+		lazy.resize(2*N-1,ini);
+		lazyflag.resize(2*N-1,false);
+	}
+ 
+	void eval(int K, int L, int R) {
+		if (lazyflag[K]) {
+			node[K]=lazy[K];
+			if (R-L>1) {
+				lazy[K*2+1]=lazy[K];
+				lazy[K*2+2]=lazy[K];
+				lazyflag[K*2+1]=lazyflag[K*2+2]=true;
+			}
+			lazyflag[K]=false;
+		}
+	}
+ 
+	void update(int A, int B, T X, int K = 0, int L = 0, int R = -1) {
+		if (R<0) R = N;
+		eval(K,L,R);
+		if (B<=L||R<=A) return;
+		if (A<=L&&R<=B) {
+			lazy[K]=X;
+			lazyflag[K]=true;
+			eval(K,L,R);
+		}
+		else {
+			update(A,B,X,2*K+1,L,(L+R)/2);
+			update(A,B,X,2*K+2,(L+R)/2,R);
+			node[K]=max(node[2*K+1],node[2*K+2]);
+		}
+	}
+ 
+	T getvar(int A, int B, int K = 0, int L = 0, int R = -1) {
+		if (R<0) R=N;
+		eval(K,L,R);
+		if (B<=L||R<=A) return ini;
+		if (A<=L&&R<=B) return node[K];
+		T vl=getvar(A,B,2*K+1,L,(L+R)/2);
+		T vr=getvar(A,B,2*K+2,(L+R)/2,R);
+		return max(vl,vr);
+	}
+ 
+	T operator[](size_t idx) {
+		return getvar(idx,idx+1);
+	}
+ 
+	T operator[](pair<size_t, size_t> p) {
+		return getvar(p.fi,p.se);
+	}
+ 
+	void print() {
+		cout<<"{ "<<getvar(0,1);
+		for (int i=1; i<M; i++) cout<<", "<<getvar(i,i+1);
+		cout<<" }"<<endl;
+	}
+};
+
+int main(void){
+        cin.tie(0);
+        cout.tie(0);
+    ios::sync_with_stdio(false);
+
+	cin>>n>>q;
+	rep(i,n)cin>>s[i]>>t[i]>>x[i];
+	rep(i,q)cin>>d[i];
+
+  	//座圧
+	V zaatu(2*n+q);
+	rep(i,n){
+		zaatu[i]=s[i]-x[i];
+		zaatu[i+n]=t[i]-x[i];
+	}
+	rep(i,q){
+		zaatu[i+2*n]=d[i];
+	}
+	auto atu=Zarts<ll>(zaatu);
+	rep(i,n){
+		l[i]=atu[i];
+		r[i]=atu[i+n];
+	}
+	rep(i,q){
+		score[i]=atu[i+2*n];
+	}
+	//////
+
+	Lazy_Segment_Tree_Range_Minimum_Query<ll> seg(2*n+q+100,LINF);
+
+	//////
+	//Minimunの場合はコストの大きいものからupdate!!!!!!!!!!!!!!!!!!
+	おそらくだけど、i番目の値に二つのupdateがあると後の方が優先されるよ
+	//////
+
+	rep(i,n){
+		p[i]=m_p(x[i],m_p(l[i],r[i]));
+	}
+	sort(p,p+n);
+	reverse(p,p+n);
+
+	rep(i,n){
+		//update(l,r,cost)ここでrは範囲に含まれない　つまりl<=ohara<rみたいな感じ
+		seg.update(p[i].se.fi,p[i].se.se,p[i].fi);
+	}
+	rep(i,q){
+		//Cout(score[i]);
+		//getvar(l,r)lからrの最小値get ここでrは含まれない
+		ans=seg.getvar(score[i],score[i]+1);
+		if(ans!=LINF)Cout(ans);
+		else Cout(-1);
+	}
+    return 0;
+}
