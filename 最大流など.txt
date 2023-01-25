@@ -22,7 +22,7 @@ string alph("abcdefghijklmnopqrstuvwxyz");
 bool fl;
 struct edge{int to,cost;};
 
-//-------------------------««««««------------------------
+//-------------------------ÂÂ«ÂÂ«ÂÂ«ÂÂ«ÂÂ«ÂÂ«------------------------
 
 struct Graph{
     struct edge{
