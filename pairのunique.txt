@@ -1,0 +1,13 @@
+struct pair_equal {
+  bool operator()(const pair<ll, ll>& x, const pair<ll, ll>& y) const {
+    return x.se == y.se;
+  }
+};
+
+//
+int main...
+//
+
+sorted.erase(unique(all(sorted), pair_equal()), sorted.end());
+
+//sorted‚Æ‚¢‚¤vector‚Ì‘æ“ñˆø”‚ğunique‚Ì‚µ‚½‚¢‚Æ‚«A‘æˆêˆø”‚Ì‚Ípair_equal‚Ìx.se==y.se‚ğx.fi==y.fi‚É•ÏX

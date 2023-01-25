@@ -1,0 +1,71 @@
+#include <bits/stdc++.h>
+
+#define rep(i,n) for(long long int (i)=0;(i)<(int)(n);(i)++)
+#define rrep(i,a,b) for(long long int i=(a);i<(b);i++)
+#define rrrep(i,a,b) for(long long int i=(a);i>=(b);i--)
+#define all(v) (v).begin(), (v).end()
+#define pb(q) push_back(q)
+#define Size(n) (n).size()
+#define Cout(x) cout<<(x)<<endl
+
+typedef long long ll;
+
+using namespace std;
+
+const int INF = 1e9,MOD = 1e9 + 7,ohara = 1e6,MAX_SIZE=1<<17;
+const ll LINF = 1e18;
+long long int n,cnt=0,ans=0,c[ohara],d,e,f,cmp,cmpp,m,h,w,y,sum=0,pos,segMin[2*MAX_SIZE-1],segAdd[2*MAX_SIZE-1],nn,q,TLE;
+int dy[]={1,0,-1,0};
+int dx[]={0,1,0,-1};
+string alph("abcdefghijklmnopqrstuvwxyz"),s;
+bool fl;
+struct edge{int to,cost;};
+
+//-------------------------««««««------------------------
+
+void add(ll a,ll b,ll x,ll k=0,ll l=0,ll r=MAX_SIZE){
+  if(r<=a||b<=l)return;
+  if(a<=l&&r<=b){
+    segAdd[k]+=x;
+    return;
+  }
+
+  add(a,b,x,k*2+1,l,(l+r)/2);
+  add(a,b,x,k*2+2,(l+r)/2,r);
+
+  segMin[k]=min(segMin[k*2+1]+segAdd[k*2+1],segMin[k*2+2]+segAdd[k*2+2]);
+}
+
+ll getMin(ll a,ll b,ll k=0,ll l=0,ll r=MAX_SIZE){
+  if(r<=a||b<=l)return LLONG_MAX;
+  if(a<=l&&r<=b)return(segMin[k]+segAdd[k]);
+
+  ll left=getMin(a,b,k*2+1,l,(l+r)/2);
+  ll right=getMin(a,b,k*2+2,(l+r)/2,r);
+
+  return min(left,right)+segAdd[k];
+}
+int main(void){
+  
+       cin.tie(0);
+    ios::sync_with_stdio(false);
+      
+      cin>>nn>>q;
+      rep(i,nn){
+        cin>>c[i];
+        add(i,i+1,c[i]);
+      }
+      rep(i,q){
+        cin>>d>>e>>f;
+        if(d==1){
+          Cout(getMin(e-1,f));
+        }
+        else{
+          cin>>TLE;
+          add(e-1,f,TLE);
+        }
+      }
+    
+       
+return 0;
+}

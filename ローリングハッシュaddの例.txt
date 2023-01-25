@@ -1,0 +1,128 @@
+#include <bits/stdc++.h>
+typedef long long ll;
+typedef long double ld;
+const int INF=1e9,MOD=1e9+7,ohara=1e6+10;
+const ll LINF=1e18;
+using namespace std;
+
+#define rep(i,n) for(int (i)=0;(i)<(int)(n);(i)++)
+#define rrep(i,a,b) for(int i=(a);i<(b);i++)
+#define rrrep(i,a,b) for(int i=(a);i>=(b);i--)
+#define all(v) (v).begin(), (v).end()
+#define Size(n) (n).size()
+#define Cout(x) cout<<(x)<<endl
+#define doublecout(a) cout<<fixed<<setprecision(15)<<a<<endl;
+#define Cerr(x) cerr<<(x)<<endl
+#define fi first
+#define se second
+#define P pair<ll,ll> 
+#define m_p make_pair
+#define V vector<ll> 
+#define U_MAP unordered_map<ll,ll>
+
+ll n,cnt,a,b,c,d,tmp,tmpp,m,h,w,x,y,sum,pos,k;
+ld doua;
+int dy[]={1,0,-1,0};
+int dx[]={0,1,0,-1};
+//int dy[]={-1,0,1,-1,1,-1,0,1};
+//int dx[]={-1,-1,-1,0,0,1,1,1};
+string alph("abcdefghijklmnopqrstuvwxyz"),s[ohara],ans;
+bool fl;
+struct edge{int to,cost;};
+
+//-------------------------↓↓↓↓↓↓------------------------
+
+//------ 自分を天才だと信じる ------
+
+
+
+template<typename T,T MOD, T MOD2, T MOD3, T B>
+struct RollingHash{
+    vector<T> hash, hash2, hash3, p, q, r;
+    RollingHash(){}
+    RollingHash(const string &s){
+        int n=s.size();
+        hash.assign(n+1,0);
+        hash2.assign(n+1,0);
+        hash3.assign(n+1,0);
+        p.assign(n+1,1);
+        q.assign(n+1,1);
+        r.assign(n+1,1);
+        rep(i,n){
+            hash[i+1]=(hash[i]*B+s[i])%MOD;
+	        hash2[i+1]=(hash2[i]*B+s[i])%MOD2;
+	        hash3[i+1]=(hash3[i]*B+s[i])%MOD3;
+            p[i+1]=p[i]*B%MOD;
+            q[i+1]=q[i]*B%MOD2;
+            r[i+1]=r[i]*B%MOD3;
+        }
+    }
+
+    void add(string &t){
+	    const int oldLen=hash.size();
+	    hash.resize(hash.size()+t.size(),0);
+	    hash2.resize(hash.size()+t.size(),0);
+	    hash3.resize(hash.size()+t.size(),0);
+	    p.resize(hash.size()+t.size(),1);
+	    q.resize(hash.size()+t.size(),1);
+	    r.resize(hash.size()+t.size(),1);
+	    rep(i,Size(t)){
+	        hash[oldLen+i]=(hash[oldLen-1+i]*B+t[i])%MOD;
+	        hash2[oldLen+i]=(hash2[oldLen-1+i]*B+t[i])%MOD2;
+	        hash3[oldLen+i]=(hash3[oldLen-1+i]*B+t[i])%MOD3;
+	        p[oldLen+i]=p[oldLen+i-1]*B%MOD;
+	        q[oldLen+i]=q[oldLen+i-1]*B%MOD2;
+	        r[oldLen+i]=r[oldLen+i-1]*B%MOD3;
+	    }
+    }
+  
+  //S[l, r)
+  pair<T,pair<T,T>> find(int l,int R){
+	if(l==R)return {0,{0,0}};
+    T res=hash[R]+MOD-hash[l]*p[R-l]%MOD;		
+    res%=MOD;
+    T ret=hash2[R]+MOD2-hash2[l]*q[R-l]%MOD2;	
+    ret%=MOD2;
+	T rel=hash3[R]+MOD3-hash3[l]*r[R-l]%MOD3;	
+    rel%=MOD3;
+	return {res,{ret,rel}};
+  }
+};
+
+
+int main(void){
+        cin.tie(0);
+        cout.tie(0);
+    ios::sync_with_stdio(false);
+
+    cin>>n;
+    rep(i,n)cin>>s[i];
+
+    const ll MOD1=1e9+7;
+	const ll MOD2=998244353;
+	const ll MOD3=998244601;
+	const ll B=1777771;
+	using RH=RollingHash<ll,MOD1,MOD2,MOD3,B>;
+
+    RH A(s[0]);
+    ans=s[0];
+    rrep(i,1,n){
+        RH BB(s[i]);
+        //j文字一致させる
+        tmp=0;
+        rep(j,min(Size(s[i]),Size(ans))+1){
+            auto X=A.find(Size(ans)-j,Size(ans));
+            auto Y=BB.find(0,j);
+            if(X==Y)tmp=j;
+        }
+        string nex="";
+        rrep(j,tmp,Size(s[i])){
+            ans+=s[i][j];
+            nex+=s[i][j];
+        }
+        A.add(nex);//addはある文字列に対し最初はsでハッシュを取った,が追加クエリでそのsに文字列を追加
+                   //する場合に追加する文字列を直接sでハッシュを取った変数であるAにaddする。
+    }
+    Cout(ans);
+    return 0;
+}

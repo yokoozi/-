@@ -1,0 +1,6 @@
+
+  rep(i, ta) rep(j, yo) ho[i][j] = co[i][j];//保持配列
+  rep(i, yo) {
+    rep(j, ta) { co[i][j] = ho[j][yo - i - 1]; }
+  }
+  swap(ta, yo);

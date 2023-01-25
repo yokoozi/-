@@ -1,0 +1,39 @@
+#include <bits/stdc++.h>
+#include <atcoder/all>
+using namespace std;
+using namespace atcoder;
+
+int op(int a, int b){ return min(a, b); } // 結局何が欲しいん？（今回は区間min）
+int e(){ return 1001001001; } // 区間minやからLINF（何が欲しいん？の単位元）
+int mapping(int f, int x){ return f+x; } // 更新はどうするの？
+
+//操作gの後に操作fを追加するとき
+//区間加算ならreturn f+g;
+//可換でない時注意
+//ある単一要素にgとfを作用させると考えると考えやすい説らしい
+int composition(int f, int g){ return f+g; } // 更新はどうすんの？2
+
+int id(){ return 0; } // 区間加算やから 0（更新の単位元）
+
+int main(){
+    int n, q; cin >> n >> q;
+    string s; cin >> s;
+    vector<int> v(n + 1);
+    for(int i = 0; i < n; i++){
+        if(s[i] == '(') v[i + 1] = v[i] + 1;
+        else v[i + 1] = v[i] - 1;
+    }
+    lazy_segtree<int, op, e, int, mapping, composition, id> seg(v);
+    for(int i = 0; i < q; i++){
+        int t, l, r; cin >> t >> l >> r;
+        if(t == 1){
+            if(s[l - 1] == '(' && s[r - 1] == ')') seg.apply(l, r, -2);
+            if(s[l - 1] == ')' && s[r - 1] == '(') seg.apply(l, r, 2);
+            swap(s[l - 1], s[r - 1]);
+        }
+        else{
+            if(seg.prod(l - 1, r + 1) == seg.get(l - 1) && seg.get(l - 1) == seg.get(r)) cout << "Yes" << endl;
+            else cout << "No" << endl;
+        }
+    }
+}

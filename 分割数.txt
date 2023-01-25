@@ -1,0 +1,164 @@
+#pragma GCC target("avx")
+#pragma GCC optimize("O3")
+#pragma GCC optimize("unroll-loops")
+#include <bits/stdc++.h>
+
+using namespace std;
+
+template <std::uint_fast64_t Modulus>
+class modint {
+  using u64 = std::uint_fast64_t;
+
+ public:
+  u64 a;
+
+  constexpr modint(const u64 x = 0) noexcept : a(x % Modulus) {}
+  constexpr u64 &value() noexcept { return a; }
+  constexpr const u64 &value() const noexcept { return a; }
+  constexpr modint operator+(const modint rhs) const noexcept {
+    return modint(*this) += rhs;
+  }
+  constexpr modint operator-(const modint rhs) const noexcept {
+    return modint(*this) -= rhs;
+  }
+  constexpr modint operator*(const modint rhs) const noexcept {
+    return modint(*this) *= rhs;
+  }
+  constexpr modint operator/(const modint rhs) const noexcept {
+    return modint(*this) /= rhs;
+  }
+  constexpr modint &operator+=(const modint rhs) noexcept {
+    a += rhs.a;
+    if (a >= Modulus) {
+      a -= Modulus;
+    }
+    return *this;
+  }
+  constexpr modint &operator-=(const modint rhs) noexcept {
+    if (a < rhs.a) {
+      a += Modulus;
+    }
+    a -= rhs.a;
+    return *this;
+  }
+  constexpr modint &operator*=(const modint rhs) noexcept {
+    a = a * rhs.a % Modulus;
+    return *this;
+  }
+  constexpr modint &operator/=(modint rhs) noexcept {
+    u64 exp = Modulus - 2;
+    while (exp) {
+      if (exp % 2) {
+        *this *= rhs;
+      }
+      rhs *= rhs;
+      exp /= 2;
+    }
+    return *this;
+  }
+};
+
+typedef long long ll;
+typedef long double ld;
+typedef pair<ll, ll> P;
+typedef vector<ll> V;
+typedef unordered_map<ll, ll> U_MAP;
+typedef priority_queue<ll> pq;
+typedef priority_queue<ll, vector<ll>, greater<ll>> rpq;
+constexpr ll INF = 1e9, MOD = 998244353, ohara = 1e6 + 10;
+constexpr ll LINF = 1e18;
+
+#define rep(i, n) for (ll i = 0LL; (i) < (ll)(n); (i)++)
+#define rrep(i, a, b) for (ll i = (ll)(a); i < (ll)(b); i++)
+#define rrrep(i, a, b) for (ll i = (ll)(a); i >= (ll)(b); i--)
+#define all(v) (v).begin(), (v).end()
+#define Size(n) (n).size()
+#define Cout(x) cout << (x) << endl
+#define doublecout(a) cout << fixed << setprecision(15) << a << endl;
+#define fi first
+#define se second
+#define m_p make_pair
+#define p_b push_back
+
+using mint = modint<MOD>;
+
+//------ Believe yourself as a genius!!!!!! ------
+
+int dy[] = {1, 0, -1, 0};
+int dx[] = {0, 1, 0, -1};
+// int dy[]={-1,0,1,-1,1,-1,0,1};int dx[]={-1,-1,-1,0,0,1,1,1};
+string alph("abcdefghijklmnopqrstuvwxyz"), s;
+ll n, a, b, c, d, tmp, m, h, w, x, y, k, q;
+ll fac[ohara];
+mint ans;
+
+ll lcm(ll aaa, ll bbb) {
+  ll g = __gcd(aaa, bbb);
+  return aaa / g * bbb;
+}
+
+ll mypow(ll a, ll n, ll mod) {
+  ll res = 1;
+  while (n > 0) {
+    if (n & 1) res = res * a % mod;
+    a = a * a % mod;
+    n >>= 1;
+  }
+  return res;
+}
+
+void dfs(V &v, ll sum, ll cur) {
+  if (sum > n) return;
+  if (sum == n) {
+    // rep(i, Size(v)) cout << v[i] << " ";
+    // cout << "\n";
+    ll cnt[n + 10] = {};
+    mint score = 1, num = 0;
+    rep(i, Size(v)) { cnt[v[i]]++; }
+    rrep(i, 1, n + 1) {
+      if (cnt[i] == 0) continue;
+      ll val = score.value();
+      val = lcm(val, i);
+      val %= MOD;
+      score = val;
+    }
+    num = fac[n];
+    rrep(i, 1, n + 1) {
+      if (cnt[i] == 0) continue;
+      num /= (mint)mypow(fac[i], cnt[i], MOD);
+      num /= fac[cnt[i]];
+      num *= (mint)mypow(fac[i - 1], cnt[i], MOD);
+    }
+    ll tmp = score.value();
+    // Cout(score.value());
+    // Cout(num.value());
+    mint now_ans = (mint)mypow(tmp, k, MOD);
+    now_ans *= num;
+    ans += now_ans;
+  }
+  if (sum + cur > n) return;
+  rrep(i, cur, n + 1) {
+    if (sum + i > n) continue;
+    v.p_b(i);
+    cur = i;
+    dfs(v, sum + i, cur);
+    v.erase(v.end() - 1);
+  }
+}
+
+int main(void) {
+  cin.tie(0);
+  cout.tie(0);
+  ios::sync_with_stdio(false);
+
+  cin >> n >> k;
+  V v;
+  fac[0] = 1;
+  rrep(i, 1, ohara) {
+    fac[i] = fac[i - 1] * i;
+    fac[i] %= MOD;
+  }
+  dfs(v, 0LL, 1LL);
+  Cout(ans.value());
+  return 0;
+}

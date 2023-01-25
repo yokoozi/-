@@ -1,0 +1,17 @@
+///////////////2‚Â‚ÌƒxƒNƒgƒ‹‚ª‚È‚·Šp
+      vec1x=ch[i].real()-x1;
+      vec1y=ch[i].imag()-y1;
+      vec2x=x2-ch[i].real();
+      vec2y=y2-ch[i].imag();
+ 
+      double length_A=pow((vec1x*vec1x)+(vec1y*vec1y),0.5);
+      double length_B=pow((vec2x*vec2x)+(vec2y*vec2y),0.5);
+ 
+      double cos_sita=(vec1x*vec2x+vec1y*vec2y)/(length_A*length_B);
+      if(cos_sita<-1.0)cos_sita=-1.0;
+      else if(cos_sita>1.0)cos_sita=1.0;
+ 
+      double sita=acos(cos_sita);
+      //printf("sita%.20f\n",sita);
+ 
+      //////////////////

@@ -1,0 +1,61 @@
+#pragma GCC target("avx")
+#pragma GCC optimize("O3")
+#pragma GCC optimize("unroll-loops")
+#include <bits/stdc++.h>
+
+using namespace std;
+
+typedef long long ll;
+typedef long double ld;
+typedef pair<ll, ll> P;
+typedef vector<ll> V;
+typedef unordered_map<ll, ll> U_MAP;
+typedef priority_queue<ll> pq;
+typedef priority_queue<ll, vector<ll>, greater<ll>> rpq;
+constexpr ll INF = 1e9, MOD = 1e9 + 7, ohara = 1e6 + 10;
+constexpr ll LINF = 1e18;
+
+#define rep(i, n) for (int i = 0LL; (i) < (ll)(n); (i)++)
+#define rrep(i, a, b) for (int i = (ll)(a); i < (ll)(b); i++)
+#define rrrep(i, a, b) for (ll i = (ll)(a); i >= (ll)(b); i--)
+#define all(v) (v).begin(), (v).end()
+#define Size(n) (n).size()
+#define Cout(x) cout << (x) << endl
+#define doublecout(a) cout << fixed << setprecision(15) << a << endl;
+#define fi first
+#define se second
+#define m_p make_pair
+#define p_b push_back
+
+//------ Believe yourself as a genius!!!!!! ------
+
+int dy[] = {1, 0, -1, 0};
+int dx[] = {0, 1, 0, -1};
+// int dy[]={-1,0,1,-1,1,-1,0,1};int dx[]={-1,-1,-1,0,0,1,1,1};
+string alph("abcdefghijklmnopqrstuvwxyz"), s;
+int n, cnt, ans, a[ohara], b[ohara], c, d, tmp, m, h, w, x, y, sum, k, q;
+int dp[320][620][620];
+
+int main(void) {
+  cin.tie(0);
+  cout.tie(0);
+  ios::sync_with_stdio(false);
+
+  cin >> n >> x >> y;
+  rep(i, n) { cin >> a[i] >> b[i]; }
+  rep(i, 310) rep(j, 610) rep(k, 610) dp[i][j][k] = INF;
+  dp[0][0][0] = 0;
+  rrep(i, 0, n) {
+    rep(j, x + 1) {
+      rep(k, y + 1) {
+        dp[i + 1][j][k] = min(dp[i][j][k], dp[i + 1][j][k]);
+        dp[i + 1][min(j + a[i], x)][min(k + b[i], y)] =
+            min(dp[i + 1][min(j + a[i], x)][min(k + b[i], y)], dp[i][j][k] + 1);
+      }
+    }
+  }
+  ans = dp[n][x][y];
+  if (ans == INF) ans = -1;
+  Cout(ans);
+  return 0;
+}

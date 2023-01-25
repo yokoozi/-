@@ -1,0 +1,75 @@
+#pragma GCC target("avx")
+#pragma GCC optimize("O3")
+#pragma GCC optimize("unroll-loops")
+#include <bits/stdc++.h>
+
+using namespace std;
+
+typedef long long ll;
+typedef long double ld;
+typedef pair<ll, ll> P;
+typedef vector<ll> V;
+typedef unordered_map<ll, ll> U_MAP;
+typedef priority_queue<ll> pq;
+typedef priority_queue<ll, vector<ll>, greater<ll>> rpq;
+constexpr ll INF = 1e9, MOD = 1e9 + 7, ohara = 1e6 + 10;
+constexpr ll LINF = 1e18;
+
+#define rep(i, n) for (ll i = 0LL; (i) < (ll)(n); (i)++)
+#define rrep(i, a, b) for (ll i = (ll)(a); i < (ll)(b); i++)
+#define rrrep(i, a, b) for (ll i = (ll)(a); i >= (ll)(b); i--)
+#define all(v) (v).begin(), (v).end()
+#define Size(n) (n).size()
+#define Cout(x) cout << (x) << endl
+#define doublecout(a) cout << fixed << setprecision(15) << a << endl;
+#define fi first
+#define se second
+#define m_p make_pair
+#define p_b push_back
+
+//------ Believe yourself as a genius!!!!!! ------
+
+int dy[] = {1, 0, -1, 0};
+int dx[] = {0, 1, 0, -1};
+// int dy[]={-1,0,1,-1,1,-1,0,1};int dx[]={-1,-1,-1,0,0,1,1,1};
+string alph("abcdefghijklmnopqrstuvwxyz"), s;
+ll n, cnt, ans, a, b, c, d, tmp, m, h, w, x, y, sum, k, q;
+ll mem[1100][1100][10];
+
+ll judge(ll one, ll two, ll turn) {
+  if (mem[one][two][turn] != -1) return mem[one][two][turn];
+  int res = 0;
+  //一個取る
+  //一個から一個取る
+  if (one >= 1) {
+    int new_two = two;
+    if ((turn + 1) % 3 == 0) new_two++;
+    res |= !judge(one - 1, new_two, (turn + 1) % 3);
+  }
+  if (two >= 1) {
+    //二個から一個取る
+    int new_two = two;
+    if ((turn + 1) % 3 == 0) new_two++;
+    res |= !judge(one + 1, new_two - 1, (turn + 1) % 3);
+    //二個取る
+    new_two = two;
+    if ((turn + 1) % 3 == 0) new_two++;
+    res |= !judge(one, new_two - 1, (turn + 1) % 3);
+  }
+  mem[one][two][turn] = res;
+  return res;
+}
+
+int main(void) {
+  cin.tie(0);
+  cout.tie(0);
+  ios::sync_with_stdio(false);
+
+  cin >> n;
+  rep(i, 1050) rep(j, 1050) rep(k, 9) mem[i][j][k] = -1;
+  if (judge(0, n, 0) == 1)
+    Cout("Alice");
+  else
+    Cout("Bob");
+  return 0;
+}

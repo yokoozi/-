@@ -1,0 +1,25 @@
+[a : b]である値zyoの境界を探す。
+//if(a[mid]<=zyo)の解説
+//a[mid]<zyoならriがちっちゃくなる
+//理想的に、rrrepから明らかなようにriもleも大きい方が好ましい
+//よって=等号を含ませることで、leとriがでかくなる
+//zyoが0のとき、-2 -2 0 0 0  2 2 2でで=があると一番右の0
+//=がないと一番左の0を指してしまいWAになる。
+
+ll le = a, ri = b, mid;
+if (ri < le) continue;
+tmp = -1;
+while (ri - le > 1) {
+  mid = (le + ri) / 2;
+  if (a[mid] <= zyo)
+    le = mid;
+  else
+    ri = mid;
+}
+rrrep(j, min(ri2 + 2, b), max(le2 - 2, a)) {
+  if (a[j] <= zyo) {
+    tmp = j;
+    break;
+  }
+}
+if (tmp == -1) continue;

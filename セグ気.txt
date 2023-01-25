@@ -1,0 +1,79 @@
+#include <bits/stdc++.h>
+typedef long long ll;
+const int INF=1e9,MOD=1e9+7,ohara=1e6,MAX_N=1<<17;
+const ll LINF=1e18;
+using namespace std;
+
+#define rep(i,n) for(int (i)=0;(i)<(int)(n);(i)++)
+#define rrep(i,a,b) for(int i=(a);i<(b);i++)
+#define rrrep(i,a,b) for(ll i=(a);i>=(b);i--)
+#define all(v) (v).begin(), (v).end()
+#define pb(q) push_back(q)
+#define Size(n) (n).size()
+#define Cout(x) cout<<(x)<<endl
+
+ll n,cnt=0,ans=0,c,d,cmp,cmpp,m,h,w,x,y,sum=0,pos,dp[ohara],nn,dat[MAX_N],lll,aa,bb,cc;
+int dy[]={1,0,-1,0};
+int dx[]={0,1,0,-1};
+//int dy[]={-1,0,1,-1,1,-1,0,1};
+//int dx[]={-1,-1,-1,0,0,1,1,1};
+string alph("abcdefghijklmnopqrstuvwxyz"),s;
+bool fl;
+struct edge{int to,cost;};
+vector<pair<ll,ll>> con[ohara];
+map<pair<ll,ll>,ll> graph;
+map<pair<ll,ll>,ll> cou;
+
+//-------------------------««««««------------------------
+
+struct SegmentTree{
+    int siz;
+    vector<ll> node;
+    SegmentTree(int n,ll init){
+        siz=1;
+        while(siz<n)siz<<=1;
+        node.assign(2*siz,init);
+    }
+ 
+    void update(int k,ll x){
+        k+=siz-1;
+        node[k]=x;
+        while(k>0){
+            k=(k-1)/2;
+            node[k]=min(node[2*k+1],node[2*k+2]);
+        }
+    }
+ 
+    ll query(int a,int b,int k=0,int l=0,int r=-1){
+        if(r<0)r=siz;
+        if(r<=a||b<=l)return LINF;
+        if(a<=l&&r<=b)return node[k];
+        ll vl=query(a,b,2*k+1,l,(l+r)/2);
+        ll vr=query(a,b,2*k+2,(l+r)/2,r);
+        return min(vl,vr);
+    }
+};
+
+int main(void){
+       cin.tie(0);
+    ios::sync_with_stdio(false);
+      
+    cin>>nn>>lll;
+    rrep(i,1,lll+10)dp[i]=LINF;
+    rep(i,nn){
+        cin>>aa>>bb>>cc;
+        con[bb].push_back({aa,cc});
+    }
+    SegmentTree tree(lll+2,LINF);
+    tree.update(0,0);
+    rrep(i,1,lll+1){
+        for(auto e:con[i]){
+            int from=e.first;
+            ll cost=e.second;
+            dp[i]=min(dp[i],tree.query(from,i)+cost);
+        }
+        tree.update(i,dp[i]);
+    }
+    Cout(dp[lll]);
+    return 0;
+}

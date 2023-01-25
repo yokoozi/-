@@ -1,0 +1,83 @@
+#include <bits/stdc++.h>
+typedef long long ll;
+typedef long double ld;
+const int INF=1e9,MOD=1e9+7,ohara=1e6+10;
+const ll LINF=1e18;
+using namespace std;
+    
+#define rep(i,n) for(int (i)=0;(i)<(int)(n);(i)++)
+#define rrep(i,a,b) for(int i=(a);i<(b);i++)
+#define rrrep(i,a,b) for(int i=(a);i>=(b);i--)
+#define all(v) (v).begin(), (v).end()
+#define Size(n) (n).size()
+#define Cout(x) cout<<(x)<<endl
+#define doublecout(a) cout<<fixed<<setprecision(15)<<a<<endl;
+#define Cerr(x) cerr<<(x)<<endl
+#define fi first
+#define se second
+#define P pair<ll,ll> 
+#define m_p make_pair
+#define V vector<ll> 
+#define U_MAP unordered_map<ll,ll>
+#define pq priority_queue<ll>
+#define rpq priority_queue<ll,vector<ll>,greater<ll>>
+#define p_b push_back
+    
+ll n,cnt,ans,a,b,c[ohara],e[ohara][10],tmp,tmpp,m,h,w,x,y,sum,pos,k,q,s;
+ld doua;
+int dy[]={1,0,-1,0};
+int dx[]={0,1,0,-1};
+//int dy[]={-1,0,1,-1,1,-1,0,1};
+//int dx[]={-1,-1,-1,0,0,1,1,1};
+string alph("abcdefghijklmnopqrstuvwxyz");
+bool fl;
+struct edge{P to,cost;};
+V t[ohara];
+ll d[ohara][10];
+    
+//------ Believe yourself as a genius!!!!!! ------
+    
+int main(void){
+    cin.tie(0);
+    cout.tie(0);
+    ios::sync_with_stdio(false);
+    
+    cin>>n>>s>>x;
+    rep(i,n){
+        cin>>c[i];
+        rep(j,c[i]){
+            cin>>a;
+            t[i].p_b(a);
+        }
+    }
+    rep(i,n)rep(j,7)cin>>e[i][j];
+    queue<P> que;
+    que.push({s,0});
+    rep(i,ohara){
+        rep(j,10){
+            d[i][j]=LINF;
+        }
+    }
+    //d[i][j]=頂点{i,j}までのコスト最小
+    //あとは適当に幅優先
+    //ちなみにこのqueは{頂点、コスト}を持たせている
+    //d[s][0]=0;
+    while(1){
+        if(que.empty())break;
+        P X=que.front();
+        que.pop();
+        ll moto=X.fi;
+        ll cost=X.se;
+        if(d[moto][cost%7]<=cost)continue;
+        d[moto][cost%7]=cost;
+        rep(i,Size(t[moto-2001])){
+            ll to=t[moto-2001][i];
+            que.push({to,cost+e[moto-2001][cost%7]});
+        }
+    }
+    ans=LINF;
+    rep(i,10)ans=min(ans,d[x][i]);
+    if(ans==LINF)Cout(1048596);
+    else Cout(ans);
+    return 0;
+}

@@ -1,0 +1,17 @@
+rep(i,Size(alph)){
+        rep(j,Size(s)+10){
+            moji[i][j]=-1;
+        }
+    }
+    rep(i,Size(s)){
+        rep(j,Size(alph)){
+            if(alph[j]==s[i])tmp=j;
+        }
+        moji[tmp][i]=i;
+        //cout<<i<<" "<<tmp<<"\n";
+    }
+    rep(i,Size(alph)){
+        rrrep(j,Size(s)-1,0){
+            if(moji[i][j]==-1&&moji[i][j+1]!=-1)moji[i][j]=moji[i][j+1];
+        }
+    }

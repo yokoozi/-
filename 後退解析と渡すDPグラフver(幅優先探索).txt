@@ -1,0 +1,112 @@
+#pragma GCC target(avx)
+#pragma GCC optimize(O3)
+#pragma GCC optimize(unroll-loops)
+#include bitsstdc++.h
+
+using namespace std;
+
+typedef long long ll;
+typedef long double ld;
+typedef pairll, ll P;
+typedef vectorll V;
+typedef unordered_mapll, ll U_MAP;
+typedef priority_queuell pq;
+typedef priority_queuell, vectorll, greaterll rpq;
+constexpr ll INF = 1e9, MOD = 1e9 + 7, ohara = 1e6 + 10;
+constexpr ll LINF = 1e18;
+
+#define rep(i, n) for (ll i = 0LL; (i)  (ll)(n); (i)++)
+#define rrep(i, a, b) for (ll i = (ll)(a); i  (ll)(b); i++)
+#define rrrep(i, a, b) for (ll i = (ll)(a); i = (ll)(b); i--)
+#define all(v) (v).begin(), (v).end()
+#define Size(n) (n).size()
+#define Cout(x) cout  (x)  endl
+#define doublecout(a) cout  fixed  setprecision(15)  a  endl;
+#define fi first
+#define se second
+#define m_p make_pair
+#define p_b push_back
+
+------ Believe yourself as a genius!!!!!! ------
+int dy[] = {1, 0, -1, 0};
+int dx[] = {0, 1, 0, -1};
+ int dy[]={-1,0,1,-1,1,-1,0,1};int dx[]={-1,-1,-1,0,0,1,1,1};
+string alph(abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ);
+mapstring, ll ren;
+ll n, cnt, ans, a, b, c, d, tmp, m, h, w, x, y, sum, k, q, o_n;
+V re_g[ohara];
+ll u[ohara], v[ohara], dp[ohara], de_cnt[ohara];
+bool vi[ohara];
+
+void init() {
+  rep(i, ohara) dp[i] = -1;
+  ll cnt = 0;
+  rep(i, Size(alph)) {
+    rep(j, Size(alph)) {
+      rep(k, Size(alph)) {
+        string al_s = ;
+        al_s += alph[i];
+        al_s += alph[j];
+        al_s += alph[k];
+        ren[al_s] = cnt;
+        cnt++;
+      }
+    }
+  }
+  o_n = cnt;
+  return;
+}
+
+int main(void) {
+  cin.tie(0);
+  cout.tie(0);
+  iossync_with_stdio(false);
+
+  cin  n;
+  vectorstring s(n);
+  init();
+  rep(i, n) {
+    cin  s[i];
+    string be_s = , af_s = ;
+    rep(j, 3) be_s += s[i][j];
+    rrep(j, Size(s[i]) - 3, Size(s[i])) af_s += s[i][j];
+    u[i] = ren[be_s], v[i] = ren[af_s];
+    de_cnt[u[i]]++;
+    re_g[v[i]].emplace_back(u[i]);
+  }
+
+  queuell que;
+  rep(i, o_n) {
+    if (de_cnt[i] == 0) {
+      dp[i] = 0;
+      que.push(i);
+    }
+  }
+  while (!que.empty()) {
+    ll moto = que.front();
+    que.pop();
+    rep(i, Size(re_g[moto])) {
+      ll to = re_g[moto][i];
+      if (dp[to] != -1) continue;
+      de_cnt[to]--;
+      if (dp[moto] == 0) {
+        dp[to] = 1;
+        que.push(to);
+      } else if (de_cnt[to] == 0) {
+        dp[to] = 0;
+        que.push(to);
+      }
+    }
+  }
+
+  rep(i, n) {
+    ll flag = dp[v[i]];
+    if (flag == 0)
+      Cout(Takahashi);
+    else if (flag == 1)
+      Cout(Aoki);
+    else
+      Cout(Draw);
+  }
+  return 0;
+}

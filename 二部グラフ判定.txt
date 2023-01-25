@@ -1,0 +1,134 @@
+
+
+#pragma target("avx")
+#include <bits/stdc++.h>
+
+using namespace std;
+
+typedef long long ll;
+typedef long double ld;
+typedef pair<ll, ll> P;
+typedef vector<int> V;
+typedef unordered_map<ll, ll> U_MAP;
+typedef priority_queue<ll> pq;
+typedef priority_queue<ll, vector<ll>, greater<ll>> rpq;
+const int INF = 1e9, MOD = 998244353, ohara = 1e6 + 10;
+const ll LINF = 1e18;
+
+#define rep(i, n) for (ll(i) = 0; (i) < (int)(n); (i)++)
+#define rrep(i, a, b) for (ll i = (a); i < (b); i++)
+#define rrrep(i, a, b) for (ll i = (a); i >= (b); i--)
+#define all(v) (v).begin(), (v).end()
+#define Size(n) (n).size()
+#define Cout(x) cout << (x) << endl
+#define doublecout(a) cout << fixed << setprecision(15) << a << endl;
+#define fi first
+#define se second
+#define m_p make_pair
+#define p_b push_back
+
+//------ Believe yourself as a genius!!!!!! ------
+
+struct UnionFind {
+  std::vector<ll> data;
+
+  UnionFind(ll n) { data.assign(n, -1); }
+
+  void unite(int x, int y) {
+    x = find(x);
+    y = find(y);
+    if (x == y) return;
+    if (data[x] > data[y]) swap(x, y);
+    data[x] += data[y];
+    data[y] = x;
+  }
+
+  int find(int k) {
+    if (data[k] < 0) return k;
+    return data[k] = find(data[k]);
+  }
+
+  ll size(int k) { return -data[find(k)]; }
+
+  bool same(int x, int y) { return find(x) == find(y); }
+};
+
+int dy[] = {1, 0, -1, 0};
+int dx[] = {0, 1, 0, -1};
+// int dy[]={-1,0,1,-1,1,-1,0,1};int dx[]={-1,-1,-1,0,0,1,1,1};
+string alph("abcdefghijklmnopqrstuvwxyz"), s;
+int n, cnt, c, d, tmp, m, h, w, x, y, sum, k, q, rui[ohara], color[ohara];
+V g[ohara];
+
+bool dfs(ll v, ll c) {
+  color[v] = c;
+  rep(i, Size(g[v])) {
+    if (color[g[v][i]] == c) return false;
+    if (color[g[v][i]] == 0 && !dfs(g[v][i], -c)) return false;
+  }
+  return true;
+}
+
+int main(void) {
+  cin.tie(0);
+  cout.tie(0);
+  ios::sync_with_stdio(false);
+
+  rui[0] = 1;
+  rrep(i, 1, 100000 * 4) {
+    rui[i] = rui[i - 1] * 2;
+    rui[i] %= MOD;
+  }
+  cin >> q;
+  while (1) {
+    cin >> n >> m;
+    ll a[m + 5] = {}, b[m + 5] = {}, f[n + 5] = {}, ans = 1;
+    int ok = 1, vi[n + 5] = {};
+    rep(i, n) {
+      color[i] = 0;
+      g[i].clear();
+    }
+    rep(i, m) {
+      cin >> a[i] >> b[i];
+      a[i]--;
+      b[i]--;
+      g[a[i]].p_b(b[i]);
+      g[b[i]].p_b(a[i]);
+    }
+    rep(i, n) {
+      if (color[i] == 0) {
+        if (!dfs(i, 1)) {
+          ok = 0;
+          break;
+        }
+      }
+      if (!ok) break;
+    }
+    UnionFind uf(n + 5);
+    rep(i, m) { uf.unite(a[i], b[i]); }
+
+    rep(i, n) {
+      ll cost = uf.size(i);
+      if (cost == 1)
+        ans *= 3, ans %= MOD;
+      else {
+        if (color[i] == 1) vi[uf.find(i)]++;
+      }
+      // cout << cost << " " << rui[cost] << "\n";
+    }
+    rep(i, n) {
+      if (vi[uf.find(i)] == 0) continue;
+      ans *= (rui[vi[uf.find(i)]] + rui[uf.size(i) - vi[uf.find(i)]]);
+      vi[uf.find(i)] = 0;
+      ans %= MOD;
+    }
+
+    if (ok)
+      Cout(ans);
+    else
+      Cout(0);
+    q--;
+    if (q == 0) break;
+  }
+  return 0;
+}

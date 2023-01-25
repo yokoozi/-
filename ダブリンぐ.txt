@@ -1,0 +1,68 @@
+#include <bits/stdc++.h>
+typedef long long ll;
+typedef long double ld;
+const int INF=1e9,MOD=1e9+7,ohara=1e6;
+const ll LINF=1e18;
+using namespace std;
+
+#define rep(i,n) for(int (i)=0;(i)<(int)(n);(i)++)
+#define rrep(i,a,b) for(int i=(a);i<(b);i++)
+#define rrrep(i,a,b) for(int i=(a);i>=(b);i--)
+#define all(v) (v).begin(), (v).end()
+#define Size(n) (n).size()
+#define Cout(x) cout<<(x)<<endl
+
+ll n,cnt,ans,a,b,c,d,tmp,tmpp,m,h,w,x[ohara],y,sum,pos,k,q,l,r[35][ohara];
+ld doua;
+int dy[]={1,0,-1,0};
+int dx[]={0,1,0,-1};
+//int dy[]={-1,0,1,-1,1,-1,0,1};
+//int dx[]={-1,-1,-1,0,0,1,1,1};
+string alph("abcdefghijklmnopqrstuvwxyz"),s;
+bool fl;
+struct edge{int to,cost;};
+unordered_map<ll,ll> mp;
+
+//-------------------------««««««------------------------
+
+int main(void){
+       cin.tie(0);
+    ios::sync_with_stdio(false);
+
+    cin>>n;
+    set<ll> st;
+    rep(i,n)cin>>x[i],st.insert(x[i]),mp[x[i]]=i;
+    cin>>l>>q;
+    rep(i,n){
+        auto iti=st.upper_bound(x[i]+l);
+        iti--;
+        pos=*iti;
+        pos=mp[pos];
+        r[0][i]=pos;
+    }
+    rrep(i,1,31){
+        rep(j,n){
+            r[i][j]=r[i-1][r[i-1][j]];
+        }
+    }
+    rep(i,q){
+        ll fr,to,now;
+        cin>>fr>>to;
+        fr--;to--;
+        if(fr>to){
+            tmp=fr;
+            fr=to;
+            to=tmp;
+        }
+        now=fr;
+        rrrep(j,30,0){
+            if(r[j][now]<to){
+                now=r[j][now];
+                ans+=1<<j;
+            }
+        }
+        Cout(ans+1);
+        ans=0;
+    }
+    return 0;
+}

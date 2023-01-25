@@ -1,0 +1,31 @@
+l = map(int, raw_input().split())
+
+def gcd(a, b):
+    if b > a:
+        a, b = b, a
+    if b == 0:
+        return a
+    return gcd(b, a%b)
+
+t=l[0]
+a=l[1]
+b=l[2]
+
+if t%a==0:
+    ans=t/a;
+else:
+    ans=t/a+1;
+
+if t%b==0:
+    ans+=t/b;
+else:
+    ans+=t/b+1;
+
+tmp=(a * b) // gcd(a, b)
+
+if t%tmp==0:
+    ans-=t/tmp;
+else:
+    ans-=t/tmp+1;
+
+print(ans);

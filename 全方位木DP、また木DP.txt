@@ -1,0 +1,114 @@
+#pragma GCC target("avx")
+#pragma GCC optimize("O3")
+#pragma GCC optimize("unroll-loops")
+#include <bits/stdc++.h>
+
+using namespace std;
+
+typedef long long ll;
+typedef long double ld;
+typedef pair<ll, ll> P;
+typedef vector<ll> V;
+typedef unordered_map<ll, ll> U_MAP;
+typedef priority_queue<ll> pq;
+typedef priority_queue<ll, vector<ll>, greater<ll>> rpq;
+constexpr ll INF = 1e9, MOD = 1e9 + 7, ohara = 1e6 + 10;
+constexpr ll LINF = 1e18;
+
+#define rep(i, n) for (ll i = 0LL; (i) < (ll)(n); (i)++)
+#define rrep(i, a, b) for (ll i = (ll)(a); i < (ll)(b); i++)
+#define rrrep(i, a, b) for (ll i = (ll)(a); i >= (ll)(b); i--)
+#define all(v) (v).begin(), (v).end()
+#define Size(n) (n).size()
+#define Cout(x) cout << (x) << endl
+#define doublecout(a) cout << fixed << setprecision(15) << a << endl;
+#define fi first
+#define se second
+#define m_p make_pair
+#define p_b push_back
+
+//------ Believe yourself as a genius!!!!!! ------
+
+int dy[] = {1, 0, -1, 0};
+int dx[] = {0, 1, 0, -1};
+// int dy[]={-1,0,1,-1,1,-1,0,1};int dx[]={-1,-1,-1,0,0,1,1,1};
+string alph("abcdefghijklmnopqrstuvwxyz"), s;
+ll n, cnt, ans, a, b, c, d, tmp, m, h, w, x, y, sum, k, q;
+ll u[ohara], v[ohara];
+V g[ohara];
+
+struct DP {
+  ll dp;
+  ll siz;  // siz : 部分木のサイズ（根を除いてる = 葉では 0）
+  DP(ll dp = 0, ll siz = 0) : dp(dp), siz(siz) {}  // 初期化 : 葉での dp と size
+  DP& operator+=(const DP& a) {
+    // 問題によって変わる
+    // dp や siz の情報から求める
+    dp += a.dp;
+    dp += a.siz;
+    //
+    siz += a.siz;
+    return *this;
+  }
+  DP addRoot() const {
+    // この変化は反映されない
+    // つまり a = b++ ではなく a = b + 1
+    DP res(*this);
+    res.siz++;
+    return res;
+  }
+  // ↑ただの木 DP
+  // ↓全方位
+  DP operator-(const DP& a) const {
+    // 変化は反映されない
+    // += の逆操作になりがち
+    // 問題によって変わる
+    DP res(*this);
+    res.dp -= a.dp;
+    res.dp -= a.siz;
+    res.siz -= a.siz;
+    //
+    return res;
+  }
+};
+
+DP dp[ohara];
+
+// 木 DP
+void dfs(ll now, ll p = -1) {
+  rep(i, Size(g[now])) {
+    ll chi = g[now][i];
+    if (chi == p) continue;
+    dfs(chi, now);
+    dp[now] += dp[chi].addRoot();
+  }
+}
+
+// Re - Roooooooting
+void bfs(ll now, ll p = -1) {
+  rep(i, Size(g[now])) {
+    ll chi = g[now][i];
+    if (chi == p) continue;
+    DP d = dp[now] - dp[chi].addRoot();
+    dp[chi] += d.addRoot();
+    bfs(chi, now);
+  }
+}
+
+int main(void) {
+  cin.tie(0);
+  cout.tie(0);
+  ios::sync_with_stdio(false);
+
+  cin >> n;
+  rep(i, n - 1) {
+    cin >> u[i] >> v[i];
+    u[i]--, v[i]--;
+    g[u[i]].p_b(v[i]);
+    g[v[i]].p_b(u[i]);
+  }
+  dfs(0);
+  bfs(0);
+  rep(i, n) Cout(dp[i].dp);
+  return 0;
+}

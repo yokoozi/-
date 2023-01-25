@@ -1,0 +1,56 @@
+#include <bits/stdc++.h>
+using std::cout;
+using std::endl;
+using std::cin;
+
+
+
+
+struct UnionFind{
+	vector<ll> data;
+	
+	UnionFind(ll n){
+		data.assign(n,-1);
+	}
+	
+	void unite(int x, int y){
+		x=find(x); y=find(y);
+		if(x==y) return;
+		if(data[x]>data[y]) swap(x,y);
+		data[x]+=data[y];
+		data[y]=x;
+	}
+	
+	int find(int k){
+		if(data[k]<0) return k;
+		return data[k]=find(data[k]);
+	}
+ 
+	ll size(int k) {
+		return -data[find(k)];
+	}
+ 
+	bool same(int x, int y){
+		return find(x)==find(y);
+	}
+};
+
+int main(){
+	int n, m; cin >> n >> m; std::vector<int> vec(n), a(m), b(m);
+	for(int i = 0; i < n; i++) cin >> vec[i]; UnionFind uf(n);
+	std::map<int, int> mp;
+	for(int i = 0; i < n; i++) mp[vec[i]] = i;
+	for(int i = 0; i < m; i++){
+		cin >> a[i] >> b[i];
+		
+		uf.unite(--a[i], --b[i]);
+	}
+	
+	int count = 0;
+	for(int i = 0; i < n; i++){
+		if(uf.same(mp[i + 1], i)) count++;
+	}
+	
+	cout << count << endl;
+	return 0;
+}
