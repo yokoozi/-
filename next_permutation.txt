@@ -73,8 +73,8 @@ int main(void) {
   vector<ll> p(n);
   rep(i, n) p[i] = i;
 
-  // next_permutation‚Ísort‚µ‚Ü‚µ‚å‚¤I
-  // ‚í‚ê‚Ü‚·
+  // next_permutationã¯sortã—ã¾ã—ã‚‡ã†ï¼
+  // ã‚ã‚Œã¾ã™
 
   do {
     cnt++;
