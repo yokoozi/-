@@ -3,7 +3,7 @@ void init(int nn) {
 		par[i] = i;
 		ran[i] = 0;
 	}
-}//‰Šú‰»
+}//åˆæœŸåŒ–
 
 ll root(ll xx){
     if(par[xx]==xx){
@@ -13,12 +13,12 @@ ll root(ll xx){
         return par[xx]=root(par[xx]);
     }
 }
-//–Ø‚Ìª‚ğ‹‚ß‚Ä‚¢‚éB
+//æœ¨ã®æ ¹ã‚’æ±‚ã‚ã¦ã„ã‚‹ã€‚
  
 bool same(ll xx,ll yy){
     return root(xx)==root(yy);
 }
-//“¯‚¶W‡HH
+//åŒã˜é›†åˆï¼Ÿï¼Ÿ
  
 void unite(ll xx,ll yy){
     xx=root(xx);
@@ -33,7 +33,7 @@ void unite(ll xx,ll yy){
         if(ran[xx]==ran[yy])ran[xx]++;
     }
 }
-//x‚Æy‚Ì‘®‚·‚éW‡‚ğ•¹‡
+//xã¨yã®å±ã™ã‚‹é›†åˆã‚’ä½µåˆ
  
 int main(void){
        cin.tie(0);
