@@ -54,18 +54,18 @@ int main(void) {
     g[b].p_b({a, c});
   }
 
-  //�g���_�C�N�X�g���錾���
+  //拡張ダイクストラ宣言区域
 
-  // que��(���v�o�H��,���ݒ��_,�Ō�ɍs����0 or 1,0 or
-  // 1���o�Ă���̌o�H��)���������� ����������Ԃɂ�����z���p��
+  // queに(合計経路長,現在頂点,最後に行った0 or 1,0 or
+  // 1を出てからの経路長)を持たせる 持たせた状態における配列を用意
 
-  //����܂�dat(���ݒ��_,�Ō�ɍs����0 or 1,0 or
-  // 1���o�Ă���̌o�H��)=���v�o�H��
-  //������Ԃ�dat�͏�������Ώ������قǗǂ�
-  //��ʂɃ_�C�N�X�g����K�p�ł�����ł͕K�������Ȃ��Ă���
-  //�܂�dat���������X�V�ł��鎞�̂�que��push
+  //これつまりdat(現在頂点,最後に行った0 or 1,0 or
+  // 1を出てからの経路長)=合計経路長
+  //同じ状態のdatは小さければ小さいほど良い
+  //一般にダイクストラを適用できる問題では必ずそうなっている
+  //つまりdatが小さく更新できる時のみqueにpush
 
-  //��̓_�C�N�X�g���@�ɕ키
+  //後はダイクストラ法に倣う
   priority_queue<pair<P, P>, vector<pair<P, P>>, greater<pair<P, P>>> que;
   que.push({{0, 0}, {0, 0}});
   ans = INF;
@@ -94,7 +94,7 @@ int main(void) {
       new_time = min(x + 1, new_time);
 
       if (fl != new_fl && time + e.cost < x)
-        continue;  //���������ʏ�̃_�C�N�X�g���@�Ƃ͈قȂ�
+        continue;  //ここだけ通常のダイクストラ法とは異なる
       if (dat[to][new_fl][new_time] <= sum + e.cost) continue;
 
       que.push({{sum + e.cost, to}, {new_fl, new_time}});
