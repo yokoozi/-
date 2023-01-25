@@ -42,33 +42,33 @@ long long int ruizyo(long long int aa, long long int bb){
     else{
         return (ruizyo(aa-1,bb)*bb)%MOD;
     }
-}ƒtƒFƒ‹ƒ}|‚ÌƒA
+}ãƒ•ã‚§ãƒ«ãƒï¼ã®ã‚¢
 ---------------------------------------------------------------
 
 while(x!=0){
             sum+=x%10;
           / x/=10;
         }
-        ŠeŒ…‚Ì˜a
+        å„æ¡ã®å’Œ
 ---------------------------------------------------------------
 
 pair<int,int> p[100000];
 cin >> tmp;
 p[i]=make_pair(tmp,i);
-cout << p[i].second+1 << endl;//ƒyƒA‚Ì‰E‘¤‚Â‚Ü‚èi‚ğo—Í
+cout << p[i].second+1 << endl;//ãƒšã‚¢ã®å³å´ã¤ã¾ã‚Šiã‚’å‡ºåŠ›
 ---------------------------------------------------------------
 
 s.find(w[i])==string::npos
-find‚Ìg‚¢•û
+findã®ä½¿ã„æ–¹
 ---------------------------------------------------------------
 
 for(int i=0;i<n;i++){
     b[i]=x%2;
     x/=2;
-  }“ñi”
+  }äºŒé€²æ•°
 ---------------------------------------------------------------
 
-bool f[100001];//1000000ˆÈ‰º‚Ì‘f”‚ğ’²‚×‚æ‚¤I
+bool f[100001];//1000000ä»¥ä¸‹ã®ç´ æ•°ã‚’èª¿ã¹ã‚ˆã†ï¼
 rrep(i,2,100001){
        f[i]=false;
     }
@@ -86,7 +86,7 @@ rrep(i,2,100001){
     }
 ---------------------------------------------------------------
 
-visited=vector<vector<bool>>(10,vector<bool>(10,false));ƒA‚ğ‘S•”false‚É
+visited=vector<vector<bool>>(10,vector<bool>(10,false));ã‚¢ã‚’å…¨éƒ¨falseã«
 ---------------------------------------------------------------
 
 long long gcd(long long aaa,long long bbb){
@@ -99,7 +99,7 @@ long long gcd(long long aaa,long long bbb){
 long long lcm(long long aaa,long long bbb){
     long long g = gcd(aaa,bbb);
     return aaa/g * bbb;
-}¶‚©‚çÅ‘åŒö–ñ”‚ÆÅ¬Œö”{”
+}å·¦ã‹ã‚‰æœ€å¤§å…¬ç´„æ•°ã¨æœ€å°å…¬å€æ•°
 
 
 ---------------------------------------------------------------
@@ -114,7 +114,7 @@ long long int prime_cnt[10000];
                prime_cnt[n]+=1;
                break;
            }
-      }‚ ‚é”n‚ğ‘fˆö”•ª‰ğ‚µ‚Ü‚µ‚å‚¤
+      }ã‚ã‚‹æ•°nã‚’ç´ å› æ•°åˆ†è§£ã—ã¾ã—ã‚‡ã†
 ---------------------------------------------------------------*/
 
  int n,cnt=0,ans=0,a,b,c,d[1000000],cmp,cmpp,m,h,w,x,y,sum=0,pos;
@@ -125,7 +125,7 @@ bool fl=true;
 struct edge{ll to,cost;};
 vector<edge> g[1000000];
 
-//-------------------------««««««------------------------
+//-------------------------â†“â†“â†“â†“â†“â†“------------------------
 
 void dijkstra(ll s){
         priority_queue<pair<ll,ll>,vector<pair<ll,ll>>,greater<pair<ll,ll>>>que;
@@ -172,9 +172,9 @@ int main(void){
 
        cin >> n >> m;
        rep(i,m){
-           cin>>a>>b;//•Ï”a‚Æb‚Ílong long int‚¶‚á‚ ‚¾‚ß‚¾‚æ
+           cin>>a>>b;//å¤‰æ•°aã¨bã¯long long intã˜ã‚ƒã‚ã ã‚ã ã‚ˆ
            a--;b--;
-           g[a].push_back({b,1//‚±‚±‚ÅƒRƒXƒg‚ğ‚¢‚¶‚ë‚¤‚Ë});
+           g[a].push_back({b,1//ã“ã“ã§ã‚³ã‚¹ãƒˆã‚’ã„ã˜ã‚ã†ã­});
            g[b].push_back({a,1});
        }
        dijkstra(0);
