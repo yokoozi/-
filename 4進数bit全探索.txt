@@ -1,0 +1,69 @@
+#include <bits/stdc++.h>
+typedef long long ll;
+typedef long double ld;
+const int INF = 1e9, MOD = 1e9 + 7, ohara = 1e6 + 10;
+const ll LINF = 1e18;
+using namespace std;
+
+#define rep(i, n) for (int(i) = 0; (i) < (int)(n); (i)++)
+#define rrep(i, a, b) for (int i = (a); i < (b); i++)
+#define rrrep(i, a, b) for (int i = (a); i >= (b); i--)
+#define all(v) (v).begin(), (v).end()
+#define Size(n) (n).size()
+#define Cout(x) cout << (x) << endl
+#define Cerr(x) cerr << (x) << endl
+#define fi first
+#define se second
+
+ll n, cnt, ans = LINF, a, b, c, d, tmp, tmpp, m, h, w, x, y, sum, pos, k, l[ohara];
+ld doua;
+int dy[] = {1, 0, -1, 0};
+int dx[] = {0, 1, 0, -1};
+//int dy[]={-1,0,1,-1,1,-1,0,1};
+//int dx[]={-1,-1,-1,0,0,1,1,1};
+string alph("abcdefghijklmnopqrstuvwxyz"), s;
+bool fl;
+struct edge
+{
+    int to, cost;
+};
+
+//-------------------------««««««------------------------
+
+int main(void)
+{
+    cin.tie(0);
+    ios::sync_with_stdio(false);
+
+    cin >> n >> a >> b >> c;
+    rep(i, n) cin >> l[i];
+    for (int bit = 0; bit < (1 << 2 * n); bit++)
+    {
+        ll _a = 0, _b = 0, _c = 0, syn = 0;
+        rep(i, n)
+        {
+            if (((bit >> (2 * i)) & 3) == 0)
+                continue;
+            if (((bit >> (2 * i)) & 3) == 1)
+            {
+                if (_a != 0)syn++;
+                _a += l[i];
+            }
+            if (((bit >> (2 * i)) & 3) == 2)
+            {
+                if (_b != 0)syn++;
+                _b += l[i];
+            }
+            if (((bit >> (2 * i)) & 3) == 3)
+            {
+                if (_c != 0)syn++;
+                _c += l[i];
+            }
+        }
+        if (_a == 0 || _b == 0 || _c == 0)continue;
+        cnt = abs(a - _a) + abs(b - _b) + abs(c - _c) + syn * 10;
+        ans = min(ans, cnt);
+    }
+    Cout(ans);
+    return 0;
+}

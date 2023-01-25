@@ -1,0 +1,118 @@
+#include <bits/stdc++.h>
+typedef long long ll;
+typedef long double ld;
+const int INF=1e9,MOD=1e9+7,ohara=1e6+10;
+const ll LINF=1e18;
+using namespace std;
+    
+#define rep(i,n) for(int (i)=0;(i)<(int)(n);(i)++)
+#define rrep(i,a,b) for(int i=(a);i<(b);i++)
+#define rrrep(i,a,b) for(int i=(a);i>=(b);i--)
+#define all(v) (v).begin(), (v).end()
+#define Size(n) (n).size()
+#define Cout(x) cout<<(x)<<endl
+#define doublecout(a) cout<<fixed<<setprecision(15)<<a<<endl;
+#define Cerr(x) cerr<<(x)<<endl
+#define fi first
+#define se second
+#define P pair<ll,ll> 
+#define m_p make_pair
+#define V vector<ll> 
+#define U_MAP unordered_map<ll,ll>
+#define pq priority_queue<ll>
+#define rpq priority_queue<ll,vector<ll>,greater<ll>>
+    
+ll n,cnt,ans,a,b,c,d,tmp,tmpp,m,h,w,x,y,sum,pos,k;
+ld doua;
+int dy[]={1,0,-1,0};
+int dx[]={0,1,0,-1};
+//int dy[]={-1,0,1,-1,1,-1,0,1};
+//int dx[]={-1,-1,-1,0,0,1,1,1};
+string alph("abcdefghijklmnopqrstuvwxyz"),s;
+bool fl;
+struct edge{int to,cost;};
+ll q;
+    
+//-------------------------««««««------------------------
+    
+//------ ©•ª‚ğ“VË‚¾‚ÆM‚¶‚é ------
+    
+struct DoublingLowestCommonAncestor
+{
+  const int LOG;
+  vector< int > dep;
+  vector< vector< int > > g, table;
+ 
+  DoublingLowestCommonAncestor(int sz) : g(sz), dep(sz), LOG(32 - __builtin_clz(sz))
+  {
+    table.assign(LOG, vector< int >(sz, -1));
+  }
+ 
+  void add_edge(int x, int y)
+  {
+    g[x].emplace_back(y);
+    g[y].emplace_back(x);
+  }
+ 
+  void dfs(int idx, int par, int d)
+  {
+    table[0][idx] = par;
+    dep[idx] = d;
+    for(auto &to : g[idx]) {
+      if(to != par) dfs(to, idx, d + 1);
+    }
+  }
+ 
+  void build()
+  {
+    dfs(0, -1, 0);
+ 
+    for(int k = 0; k + 1 < LOG; k++) {
+      for(int i = 0; i < table[k].size(); i++) {
+        if(table[k][i] == -1) table[k + 1][i] = -1;
+        else table[k + 1][i] = table[k][table[k][i]];
+      }
+    }
+  }
+ 
+  int query(int u, int v)
+  {
+    if(dep[u] > dep[v]) swap(u, v);
+    for(int i = LOG - 1; i >= 0; i--) {
+      if(((dep[v] - dep[u]) >> i) & 1) v = table[i][v];
+    }
+    if(u == v) return u;
+    for(int i = LOG - 1; i >= 0; i--) {
+      if(table[i][u] != table[i][v]) {
+        u = table[i][u];
+        v = table[i][v];
+      }
+    }
+    return table[0][u];
+  }
+};
+
+int main(void){
+    cin.tie(0);
+    cout.tie(0);
+    ios::sync_with_stdio(false);
+    
+    cin>>n;
+    DoublingLowestCommonAncestor g(n);
+    rep(i,n-1){
+        cin>>a>>b;
+        a--;b--;
+        g.add_edge(a,b);
+    }
+    g.build();
+    cin>>q;
+    while(1){
+        if(q==0)break;
+        q--;
+        cin>>a>>b;
+        a--;b--;
+        ans=g.dep[a]+g.dep[b]-g.dep[g.query(a,b)]*2+1;
+        Cout(ans);
+    }
+    return 0;
+}

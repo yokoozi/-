@@ -1,0 +1,72 @@
+#include <bits/stdc++.h>
+typedef long long ll;
+typedef long double ld;
+const int INF = 1e9, MOD = 1e9 + 7, ohara = 1e6 + 10;
+const ll LINF = 1e18;
+using namespace std;
+
+#define rep(i, n) for (int(i) = 0; (i) < (int)(n); (i)++)
+#define rrep(i, a, b) for (int i = (a); i < (b); i++)
+#define rrrep(i, a, b) for (int i = (a); i >= (b); i--)
+#define all(v) (v).begin(), (v).end()
+#define Size(n) (n).size()
+#define Cout(x) cout << (x) << endl
+#define Cerr(x) cerr << (x) << endl
+#define fi first
+#define se second
+
+ll n, cnt, ans = LINF, a, b, c, d, tmp, tmpp, m, h, w, x, y, sum, pos, k, l[ohara];
+ld doua;
+int dy[] = {1, 0, -1, 0};
+int dx[] = {0, 1, 0, -1};
+//int dy[]={-1,0,1,-1,1,-1,0,1};
+//int dx[]={-1,-1,-1,0,0,1,1,1};
+string alph("abcdefghijklmnopqrstuvwxyz"), s;
+bool fl;
+struct edge
+{
+    int to, cost;
+};
+
+//-------------------------««««««------------------------
+
+void dfs(ll now, ll _a, ll _b, ll _c, ll syn)
+{
+    if (now == n - 1)
+    {
+        if (_a == 0 || _b == 0 || _c == 0)
+            return;
+        cnt = abs(_a - a) + abs(_b - b) + abs(_c - c) + syn * 10;
+        //if(_a==98&&_c==80)cerr<<_a<<" "<<_b<<" "<<_c<<" "<<syn<<"\n";
+        ans = min(ans, cnt);
+    }
+    else
+    {
+        if (_a == 0)
+            dfs(now + 1, _a + l[now + 1], _b, _c, syn);
+        else
+            dfs(now + 1, _a + l[now + 1], _b, _c, syn + 1);
+        if (_b == 0)
+            dfs(now + 1, _a, _b + l[now + 1], _c, syn);
+        else
+            dfs(now + 1, _a, _b + l[now + 1], _c, syn + 1);
+        if (_c == 0)
+            dfs(now + 1, _a, _b, _c + l[now + 1], syn);
+        else
+            dfs(now + 1, _a, _b, _c + l[now + 1], syn + 1);
+        dfs(now + 1, _a, _b, _c, syn);
+    }
+    return;
+}
+
+int main(void)
+{
+    cin.tie(0);
+    ios::sync_with_stdio(false);
+
+    cin >> n >> a >> b >> c;
+    rep(i, n) cin >> l[i];
+    dfs(-1LL, 0LL, 0LL, 0LL, 0LL);
+    Cout(ans);
+    return 0;
+}

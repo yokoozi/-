@@ -1,0 +1,79 @@
+#include bitsstdc++.h
+typedef long long ll;
+typedef long double ld;
+const int INF=1e9,MOD=1e9+7,ohara=1e6+10;
+const ll LINF=1e18;
+using namespace std;
+
+#define rep(i,n) for(int (i)=0;(i)(int)(n);(i)++)
+#define rrep(i,a,b) for(int i=(a);i(b);i++)
+#define rrrep(i,a,b) for(int i=(a);i=(b);i--)
+#define all(v) (v).begin(), (v).end()
+#define Size(n) (n).size()
+#define Cout(x) cout(x)endl
+#define doublecout(a) coutfixedsetprecision(15)aendl;
+#define Cerr(x) cerr(x)endl
+#define fi first
+#define se second
+#define P pairll,ll 
+#define m_p make_pair
+#define V vectorll 
+#define U_MAP unordered_mapll,ll
+
+ll n,cnt,ans,a,b,c,d,tmp,tmpp,m,h,w,x,y,sum,pos,k;
+ld doua;
+int dy[]={1,0,-1,0};
+int dx[]={0,1,0,-1};
+int dy[]={-1,0,1,-1,1,-1,0,1};
+int dx[]={-1,-1,-1,0,0,1,1,1};
+string alph(abcdefghijklmnopqrstuvwxyz),s;
+bool fl;
+struct edge{int to,cost;};
+
+-------------------------Å´Å´Å´Å´Å´Å´------------------------
+
+long long gcd(long long aaa,long long bbb){
+    if(bbb==0){
+        return aaa;
+    }
+    return gcd(bbb,aaa%bbb);
+}
+ 
+long long lcm(long long aaa,long long bbb){
+    long long g = gcd(aaa,bbb);
+    return aaag  bbb;
+}
+
+int main(void){
+        cin.tie(0);
+        cout.tie(0);
+    iossync_with_stdio(false);
+
+    cinabcd;
+    if(c==1d==1)Cout(0);
+    else{
+    ans=b-a+1;
+    ll st,en;
+    if(a%c!=0)st=a+(c-a%c);
+    else st=a;
+    if(b%c!=0)en=b-b%c;
+    else en=b;
+    if(en=st)ans=ans-(max((en-st),0LL)c+1);
+
+    if(a%d!=0)st=a+(d-a%d);
+    else st=a;
+    if(b%d!=0)en=b-b%d;
+    else en=b;
+    if(en=st)ans=ans-(max((en-st),0LL)d+1);
+
+    tmp=lcm(c,d);
+    if(a%tmp!=0)st=a+(tmp-a%tmp);
+    else st=a;
+    if(b%tmp!=0)en=b-b%tmp;
+    else en=b;
+    if(en=st)ans=ans+(max((en-st),0LL)tmp+1);
+
+    Cout(ans);
+    }
+    return 0;
+}

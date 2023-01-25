@@ -1,0 +1,100 @@
+#include <bits/stdc++.h>
+typedef long long ll;
+typedef long double ld;
+const int INF=1e9,MOD=1e9+7,ohara=1e6+10;
+const ll LINF=1e18;
+using namespace std;
+
+#define rep(i,n) for(int (i)=0;(i)<(int)(n);(i)++)
+#define rrep(i,a,b) for(int i=(a);i<(b);i++)
+#define rrrep(i,a,b) for(int i=(a);i>=(b);i--)
+#define all(v) (v).begin(), (v).end()
+#define Size(n) (n).size()
+#define Cout(x) cout<<(x)<<endl
+#define doublecout(a) cout<<fixed<<setprecision(15)<<a<<endl;
+#define Cerr(x) cerr<<(x)<<endl
+#define fi first
+#define se second
+#define P pair<ll,ll> 
+#define m_p make_pair
+#define V vector<ll> 
+
+ll n,cnt,a[ohara],b,c,d,tmp,tmpp,m,h,w,sx,sy,gx,gy,sum,pos,k,x[ohara],y[ohara];
+ld doua;
+int dy[]={1,0,-1,0};
+int dx[]={0,1,0,-1};
+//int dy[]={-1,0,1,-1,1,-1,0,1};
+//int dx[]={-1,-1,-1,0,0,1,1,1};
+string alph("abcdefghijklmnopqrstuvwxyz"),s;
+bool fl;
+struct edge{int to,cost;};
+ld ans;
+ll dp[ohara];
+P p[ohara];
+ll p_cou;
+
+//-------------------------««««««------------------------
+
+int main(void){
+       cin.tie(0);
+    ios::sync_with_stdio(false);
+
+    cin>>sx>>sy>>gx>>gy>>n;
+    rep(i,n)cin>>x[i]>>y[i];
+
+    if(sx>gx){
+        swap(sx,gx);
+        swap(sy,gy);
+    }
+    if(sy==gy){
+        rep(i,n){
+            if(y[i]==sy&&sx<=x[i]&&x[i]<=gx){
+                cnt+=2;
+            }
+        }
+        ll hyaku;
+        hyaku=(gx-sx)-cnt;
+        ans=(100.0*(ld)hyaku)+((20.0*M_PI/4.0)*(ld)cnt+(90.0*(ld)cnt));
+    }
+    else if(sx==gx){
+        rep(i,n){
+            if(x[i]==gx&&min(sy,gy)<=y[i]&&y[i]<=max(sy,gy)){
+                cnt+=2;
+            }
+        }
+        ll hyaku;
+        hyaku=(gy-sy)-cnt;
+        ans=(100.0*(ld)hyaku)+((20.0*M_PI/4.0)*(ld)cnt+(90.0*(ld)cnt));
+    }
+    else{
+        rep(i,n){
+            if(sx<=x[i]&&x[i]<=gx&&min(sy,gy)<=y[i]&&y[i]<=max(sy,gy)){
+            p[p_cou++]=m_p(x[i],y[i]);
+            }
+        }
+        sort(p,p+p_cou);
+        rep(i,p_cou)a[i]=p[i].se;
+        if(sy>gy)rep(i,p_cou)a[i]*=-1;
+        fill(dp,dp+p_cou,LINF);
+        rep(i,p_cou){
+            *lower_bound(dp,dp+p_cou,a[i])=a[i];
+        }
+        cnt=(lower_bound(dp,dp+p_cou,LINF)-dp);
+        if(cnt==min(gx-sx,abs(gy-sy))+1){
+            ll hyaku;
+            cnt*=2;
+            hyaku=abs(gy-sy)+abs(gx-sx)-cnt;
+            ans=(20.0*M_PI/4.0)*2.0+(90.0*2.0);
+            cnt-=2;
+            ans+=(100.0*(ld)hyaku)+((20.0*M_PI/4.0)*(ld)cnt/2.0+(90.0*(ld)cnt));
+        }
+        else{
+        ll hyaku;
+        cnt*=2;
+        hyaku=abs(gy-sy)+abs(gx-sx)-cnt;
+        ans=(100.0*(ld)hyaku)+((20.0*M_PI/4.0)*(ld)cnt/2.0+(90.0*(ld)cnt));
+        }
+    }
+    doublecout(ans);
+    return 0;
+}

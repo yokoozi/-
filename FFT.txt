@@ -1,0 +1,131 @@
+#pragma target("avx")
+#include <bits/stdc++.h>
+
+using namespace std;
+
+typedef long long ll;
+typedef long double ld;
+typedef pair<ll, ll> P;
+typedef vector<ll> V;
+typedef unordered_map<ll, ll> U_MAP;
+typedef priority_queue<ll> pq;
+typedef priority_queue<ll, vector<ll>, greater<ll>> rpq;
+const int INF = 1e9, MOD = 1e9 + 7, ohara = 1e6 + 10;
+const ll LINF = 1e18;
+
+#define rep(i, n) for (ll(i) = 0; (i) < (int)(n); (i)++)
+#define rrep(i, a, b) for (ll i = (a); i < (b); i++)
+#define rrrep(i, a, b) for (ll i = (a); i >= (b); i--)
+#define all(v) (v).begin(), (v).end()
+#define Size(n) (n).size()
+#define Cout(x) cout << (x) << endl
+#define doublecout(a) cout << fixed << setprecision(15) << a << endl;
+#define fi first
+#define se second
+#define m_p make_pair
+#define p_b push_back
+string to_string(string s) { return '"' + s + '"'; }
+string to_string(const char* s) { return to_string((string)s); }
+string to_string(bool b) { return (b ? "true" : "false"); }
+template <typename A, typename B>
+string to_string(pair<A, B> p) {
+  return "(" + to_string(p.first) + ", " + to_string(p.second) + ")";
+}
+template <typename A>
+string to_string(A v) {
+  bool first = true;
+  string res = "{";
+  for (const auto& x : v) {
+    if (!first) {
+      res += ", ";
+    }
+    first = false;
+    res += to_string(x);
+  }
+  res += "}";
+  return res;
+}
+void debug_out() { cerr << endl; }
+template <typename Head, typename... Tail>
+void debug_out(Head H, Tail... T) {
+  cerr << " " << to_string(H);
+  debug_out(T...);
+}
+#define debug(...) cerr << "[" << #__VA_ARGS__ << "]:", debug_out(__VA_ARGS__)
+
+//------ Believe yourself as a genius!!!!!! ------
+
+//////////////////////////
+
+vector<complex<ld>> fft(vector<complex<ld>> a, bool inverse = false) {
+  ll n = a.size();
+  ll h = 0;
+  for (ll i = 0; 1 << i < n; i++) h++;
+  rep(i, n) {
+    ll j = 0;
+    rep(k, h) j |= (i >> k & 1) << (h - 1 - k);
+    if (i < j) swap(a[i], a[j]);
+  }
+  for (ll b = 1; b < n; b *= 2) {
+    rep(j, b) {
+      complex<ld> w = polar(1.0, (2 * M_PI) / (2 * b) * j * (inverse ? 1 : -1));
+      for (ll k = 0; k < n; k += b * 2) {
+        complex<ld> s = a[j + k];
+        complex<ld> t = a[j + k + b] * w;
+        a[j + k] = s + t;
+        a[j + k + b] = s - t;
+      }
+    }
+  }
+  if (inverse) rep(i, n) a[i] /= n;
+  return a;
+}
+
+vector<complex<ld>> fft(vector<ld> a, bool inverse = false) {
+  vector<complex<ld>> a_complex(a.size());
+  rep(i, Size(a)) a_complex[i] = complex<ld>(a[i], 0);
+  return fft(a_complex, inverse);
+}
+
+vector<ld> convolve(vector<ld> a, vector<ld> b) {
+  ll s = a.size() + b.size() - 1;
+  ll t = 1;
+  while (t < s) t *= 2;
+  a.resize(t);
+  b.resize(t);
+  vector<complex<ld>> A = fft(a);
+  vector<complex<ld>> B = fft(b);
+  rep(i, t) { A[i] *= B[i]; }
+  A = fft(A, true);
+  a.resize(s);
+  rep(i, s) a[i] = A[i].real();
+  return a;
+}
+
+////////////////////////
+
+int dy[] = {1, 0, -1, 0};
+int dx[] = {0, 1, 0, -1};
+// int dy[]={-1,0,1,-1,1,-1,0,1};int dx[]={-1,-1,-1,0,0,1,1,1};
+string alph("abcdefghijklmnopqrstuvwxyz"), s;
+ll n, cnt, c, d, tmp, m, h, w, x, y, sum, k, q;
+
+int main(void) {
+  cin.tie(0);
+  cout.tie(0);
+  ios::sync_with_stdio(false);
+
+  cin >> n;
+  vector<ld> a(n + 1), b(n + 1);
+  a[0] = 0;
+  b[0] = 0;  // 0円のメニューは存在しないため
+  rep(i, n) cin >> a[i + 1] >> b[i + 1];
+
+  vector<ld> ans = convolve(a, b);
+
+  rrep(i, 1, Size(ans)) {
+    //整数値出力ゆえ四捨五入
+    cout << (ll)(ans[i] + 0.5) << "\n";
+  }
+  return 0;
+}

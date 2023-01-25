@@ -1,0 +1,90 @@
+#pragma GCC target("avx")
+#pragma GCC optimize("O3")
+#pragma GCC optimize("unroll-loops")
+#include <bits/stdc++.h>
+
+using namespace std;
+
+typedef long long ll;
+typedef long double ld;
+typedef pair<ll, ll> P;
+typedef vector<ll> V;
+typedef unordered_map<ll, ll> U_MAP;
+typedef priority_queue<ll> pq;
+typedef priority_queue<ll, vector<ll>, greater<ll>> rpq;
+constexpr ll INF = 1e9, MOD = 1e9 + 7, ohara = 1e6 + 10;
+constexpr ll LINF = 1e18;
+
+#define rep(i, n) for (ll i = 0LL; (i) < (ll)(n); (i)++)
+#define rrep(i, a, b) for (ll i = (ll)(a); i < (ll)(b); i++)
+#define rrrep(i, a, b) for (ll i = (ll)(a); i >= (ll)(b); i--)
+#define all(v) (v).begin(), (v).end()
+#define Size(n) (n).size()
+#define Cout(x) cout << (x) << endl
+#define doublecout(a) cout << fixed << setprecision(15) << a << endl;
+#define fi first
+#define se second
+#define m_p make_pair
+#define p_b push_back
+
+//------ Believe yourself as a genius!!!!!! ------
+
+int dy[] = {1, 0, -1, 0};
+int dx[] = {0, 1, 0, -1};
+// int dy[]={-1,0,1,-1,1,-1,0,1};int dx[]={-1,-1,-1,0,0,1,1,1};
+string alph("abcdefghijklmnopqrstuvwxyz"), s;
+ll n, cnt, ans, a[ohara], b[ohara], c, d, tmp, m, h, w, x, y, sum, k, q;
+bool ok[ohara];
+ll dp[ohara];
+
+void clique_judge() {
+  ll lim = (1LL << n);
+  rep(bit, lim) {
+    bool used[n + 1] = {};
+    bool ex[n + 1][n + 1] = {};
+    bool judge = true;
+    rep(i, n) {
+      if (bit & (1LL << i)) used[i] = true;
+    }
+    rep(i, m) {
+      if (!used[a[i]] || !used[b[i]]) continue;
+      ex[a[i]][b[i]] = true;
+      ex[b[i]][a[i]] = true;
+    }
+    rep(i, n) {
+      if (!used[i]) continue;
+      rrep(j, i + 1, n) {
+        if (!used[j]) continue;
+        if (!ex[i][j]) judge = false;
+      }
+    }
+    ok[bit] = judge;
+  }
+}
+
+int main(void) {
+  cin.tie(0);
+  cout.tie(0);
+  ios::sync_with_stdio(false);
+
+  cin >> n >> m;
+  rep(i, m) {
+    cin >> a[i] >> b[i];
+    a[i]--, b[i]--;
+  }
+  clique_judge();
+  ll lim = (1LL << n);
+  rep(i, lim + 10) dp[i] = LINF;
+  dp[0] = 0;
+  rep(bit, lim) {
+    ll cbit = (1LL << n) - 1 - bit;
+    for (ll add_bit = cbit;; add_bit = (add_bit - 1) & cbit) {
+      // bit の補集合の部分集合全列挙
+      if (add_bit == 0) break;  // 空集合で break
+      if (!ok[add_bit]) continue;
+      dp[bit | add_bit] = min(dp[bit | add_bit], dp[bit] + 1);
+    }
+  }
+  Cout(dp[lim - 1]);
+  return 0;
+}
